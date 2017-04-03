@@ -147,8 +147,8 @@ CPUTTexture *CPUTTextureDX11::Create( const std::string &name, const std::string
     CPUTTextureDX11 *pNewTexture = new CPUTTextureDX11();
     pNewTexture->mName = name;
     pNewTexture->SetTextureAndShaderResourceView( pTexture, pShaderResourceView );
-    pTexture->Release();
-    pShaderResourceView->Release();
+	if (pTexture) pTexture->Release();
+	if (pShaderResourceView) pShaderResourceView->Release();
 
 
     return pNewTexture;

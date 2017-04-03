@@ -11,8 +11,11 @@
 
 enum MainMenuIds
 {
-	MainMenuIds_Glasses= 0,
-	MainMenuIds_Face
+	MainMenuIds_Text = 0,
+	MainMenuIds_Glasses,
+	MainMenuIds_FaceMapping,
+	MainMenuIds_FaceReview,
+	MainMenuIds_TryOn
 };
 
 Menu_Function::Menu_Function()
@@ -35,8 +38,10 @@ void Menu_Function::ActivationChanged(bool active)
 	if (active)
 	{
 		CPUTGuiController *pGUI = MenuGlob_GUI();
-		pGUI->CreateButton("FACE MODE", MainMenuIds_Face, MENU_CPUT_PANEL_ID);
+		pGUI->CreateText("DEBUG MENU", MainMenuIds_Text, MENU_CPUT_PANEL_ID);
+		pGUI->CreateButton("FACE MAPPING MODE", MainMenuIds_FaceMapping, MENU_CPUT_PANEL_ID);
 		pGUI->CreateButton("GLASSES MODE", MainMenuIds_Glasses, MENU_CPUT_PANEL_ID);
+		pGUI->CreateButton("VIRTUAL TRY-ON MODE", MainMenuIds_TryOn, MENU_CPUT_PANEL_ID);
 	}
 }
 
@@ -49,7 +54,7 @@ void Menu_Function::HandleCPUTEvent(int eventID, int controlID, CPUTControl *con
 	{
 		switch (controlID)
 		{
-		case MainMenuIds_Face:
+		case MainMenuIds_FaceMapping:
 		{
 			// Push to menu Face scan or Face Preview
 			std::string debugFace;
@@ -66,6 +71,11 @@ void Menu_Function::HandleCPUTEvent(int eventID, int controlID, CPUTControl *con
 			gMenu_GlassesPreview->LoadGlassesObj(debugGlasses, true, true);
 			MenuController_PushMenu(gMenu_GlassesPreview);
 		} break;
+		case MainMenuIds_TryOn:
+		{
+
+		}
+		break;
 		}
 	}
 }

@@ -1,20 +1,40 @@
-# Blender MTL File: 'Glasses.blend'
-# Material Count: 2
+#  ==========================================================================
+#  Wavefront Material file
+#  Exported by Red-i Productions' "Riptide Pro"
+#  (a commercial plugin for Cinema 4D PC & Mac, R9.6 or later)
+#  
+#  Red-i Productions
+#  http://skinprops.com
+#  
+#  ==========================================================================
 
-newmtl Glass
-Ns 96.078431
-Ka 0.000000 0.000000 0.000000
-Kd 0.640000 0.640000 0.640000
-Ks 0.500000 0.500000 0.500000
-Ni 1.000000
-d 0.085000
+newmtl Black
+Kd 0.834951 0.834951 0.834951
 illum 2
+Ns 50.781250
 
-newmtl Plastic
-Ns 915.686275
-Ka 0.000000 0.000000 0.000000
-Kd 0.003095 0.003095 0.003095
-Ks 1.000000 1.000000 1.000000
-Ni 1.000000
-d 1.000000
+newmtl Extrude_NURBS_FULLSELECTION_1093317376
+illum 1
+
+newmtl Rounding_1_FULLSELECTION_1093305184
+illum 1
+
+newmtl Cap_1_FULLSELECTION_1345117472
+illum 1
+
+newmtl Rounding_2_FULLSELECTION_128368592
+illum 1
+
+newmtl Cap_2_FULLSELECTION_1291173504
+illum 1
+
+newmtl Extrude_NURBS-Extrude_NURBS_FULLSELECTION_1659970672
+illum 1
+
+newmtl Mat
+Kd 0.077670 0.077670 0.077670
+Tf 1.000000 1.000000 1.000000
 illum 2
+Ns 50.781250
+d 0.390000
+Ni 1.000000

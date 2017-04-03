@@ -152,6 +152,7 @@ public:
 	void ActivationChanged(bool active);
 
 	void LoadFace(const std::string &filename);
+	
 
 	void Render(CPUTRenderParameters &renderParams);
 
@@ -184,6 +185,9 @@ private:
 
 	CFaceModel mFaceModel;
 
+	//Add glasses
+	//CGlassesModel mGlassesModel;
+
 	int3 mPostBlendColorize[2];
 	int3 mPostBlendAdjust[2];
 	MappingTweaks mTweaks;
@@ -200,6 +204,9 @@ private:
 	std::string mObjFilename;
 
 	CPUTModel *mDisplayHead;
+
+	//Add glasses
+	//CPUTModel *mDisplayGlasses;
 
 	CPUTModel *mCPUTLandmarkModel;
 
