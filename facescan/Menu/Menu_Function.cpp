@@ -48,8 +48,7 @@ void Menu_Function::ActivationChanged(bool active)
 void Menu_Function::HandleCPUTEvent(int eventID, int controlID, CPUTControl *control)
 {
 	std::string userDir = GetUserDataDirectory();
-
-
+	
 	if (eventID == CPUT_EVENT_DOWN)
 	{
 		switch (controlID)
@@ -58,7 +57,7 @@ void Menu_Function::HandleCPUTEvent(int eventID, int controlID, CPUTControl *con
 		{
 			// Push to menu Face scan or Face Preview
 			std::string debugFace;
-			CPUTFileSystem::CombinePath(userDir, "joe_sr300_1.obj", &debugFace);
+			CPUTFileSystem::CombinePath(userDir, "model_Apr_26_2017_11_36_48.obj", &debugFace);
 			gMenu_FaceMapping->LoadFace(debugFace);
 			MenuController_PushMenu(gMenu_FaceMapping);
 
@@ -73,7 +72,12 @@ void Menu_Function::HandleCPUTEvent(int eventID, int controlID, CPUTControl *con
 		} break;
 		case MainMenuIds_TryOn:
 		{
-
+			/*std::string debugFace, debugGlasses;
+			CPUTFileSystem::CombinePath(userDir, "joe_sr300_1.obj", &debugFace);
+			CPUTFileSystem::CombinePath(userDir, "glasses.obj", &debugGlasses);
+			gMenu_FaceMapping->LoadFace(debugFace);
+			gMenu_FaceMapping->LoadGlasses(debugGlasses);
+			MenuController_PushMenu(gMenu_FaceMapping);*/
 		}
 		break;
 		}

@@ -120,6 +120,8 @@ public:
 
 	CPUTColor4 BlendColor1;
 	CPUTColor4 BlendColor2;
+	float LightColor1;
+	float LightColor2;
 
 	PostBlendColorMode PostBlendMode;
 	int3 PostBlendColorize[2];

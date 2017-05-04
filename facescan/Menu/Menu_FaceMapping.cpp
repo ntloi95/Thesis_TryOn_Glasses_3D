@@ -63,7 +63,7 @@ static int cAssert2 = 1 / ((ARRAYSIZE(sDebugHeadDisplayTextureNames) == DebugHea
 const char *sPostBlendColorModes[] =
 {
 	"None",
-	"Colorize",
+	"Colorized",
 	"Adjust",
 };
 static int cAssert3 = 3 / ((ARRAYSIZE(sPostBlendColorModes) == PostBlendColorMode_Count) ? 1 : 0);
@@ -83,12 +83,12 @@ void SetDefaultTweaks(MappingTweaks *tweaks)
 	tweaks->FacePitch = 0.0f;
 	tweaks->FaceRoll = 0.0f;
 	tweaks->OutputTextureResolution = 2048;
-	tweaks->DisplaceOffset = float3(0.0f, 0.0f, -3.5f);
-	tweaks->BlendColor1 = CPUTColorFromBytes(228, 194, 171, 255);
-	tweaks->BlendColor2 = CPUTColorFromBytes(205, 50, 50, 255);
+	tweaks->DisplaceOffset = float3(0.0f, 0.0f, -1.88f);
+	tweaks->BlendColor1 = CPUTColorFromBytes(255, 194, 140, 255);
+	tweaks->BlendColor2 = CPUTColorFromBytes(100, 48, 0, 255);
 	tweaks->PostBlendAdjust[0] = tweaks->PostBlendAdjust[1] = int3(0, 0, 0);
 	tweaks->PostBlendColorize[0] = tweaks->PostBlendColorize[1] = int3(180, 50, 0);
-	tweaks->PostBlendMode = PostBlendColorMode_None;
+	tweaks->PostBlendMode = PostBlendColorMode_Adjust;
 	tweaks->OtherHeadBlend = 0.0f;
 	tweaks->OtherHeadTexture = NULL;
 	tweaks->OtherHeadMesh = NULL;
@@ -128,7 +128,7 @@ void Menu_FaceMapping::SetDefaultDebug()
 	mUseOrthoCamera = false;
 	mSkipFaceFit = true;
 	mHideCubeMap = true;
-	mSkipFaceDisplace = true;
+	mSkipFaceDisplace = false;
 	mSkipFaceColorBlend = false;
 	mSkipSeamFill = false;
 
@@ -137,6 +137,8 @@ void Menu_FaceMapping::SetDefaultDebug()
 	mDirectionalLightIntensity = 0.7f;
 	mAmbientLightIntensity = 0.3f;
 
+	mHeight = 1.65f;
+	mWeight = 50.0f;
 }
 
 void Menu_FaceMapping::ResetCameraDefaults()
@@ -166,10 +168,11 @@ void Menu_FaceMapping::ResetCameraDefaults()
 	mCameraControlOrthographic->SetVolume(float3(-20.0f, -20.0f, -100.0f), float3(20.0f, 20.0f, -100.0f));
 }
 
+
+
 void Menu_FaceMapping::Init()
 {
 	MenuBase::Init();
-
 	mCPUTLandmarkModel = NULL;
 	
 	mForceRebuildAll = true;
@@ -279,12 +282,12 @@ void Menu_FaceMapping::Init()
 
 	QuickSet("Front Profile", "Head Width", 0.5f, "shape_width", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
 	QuickSet("Front Profile", "Eye Area Width", 0.5f, "shape_orbit_width", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
-	QuickSet("Front Profile", "Cheekbone Width", 0.5f, "shape_cheekbone_size", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
+	QuickSet("Front Profile", "Cheekbone Width", 0.0f, "shape_cheekbone_size", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
 	QuickSet("Front Profile", "OCC Width", 0.5f, "shape_OCC_width", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
 	QuickSet("Front Profile", "Jaw Width", 0.5f, "shape_jaw_width", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
-	QuickSet("Front Profile", "Jaw Level", 0.5f, "shape_jaw_level", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
-	QuickSet("Front Profile", "Chin Width", 0.5f, "shape_chin_width", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
-	QuickSet("Front Profile", "Neck Width", 0.5f, "shape_neck_girth", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
+	QuickSet("Front Profile", "Jaw Level", 0.58f, "shape_jaw_level", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
+	QuickSet("Front Profile", "Chin Width", 0.67f, "shape_chin_width", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
+	QuickSet("Front Profile", "Neck Width", 0.21f, "shape_neck_girth", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
 		
 	QuickSet("Base Shape", "Shape 1", 0.0f, "shape_1", 0.0f, 1.0f, 0.0f, 1.0f, mMorphParamDefs);
 	QuickSet("Base Shape", "Shape 2", 0.0f, "shape_2", 0.0f, 1.0f, 0.0f, 1.0f, mMorphParamDefs);
@@ -296,7 +299,9 @@ void Menu_FaceMapping::Init()
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_square", 0.0f, 0.5f, 1.0f, 0.0f));
 	mMorphParamDefs.push_back(def);
 	
-	def.Reset("Base Shape", "BMI", 0.5f);
+	float BMI = mWeight / (mHeight*mHeight);
+	float sBMI = (BMI - BMI_MIN)/(BMI_MAX - BMI_MIN);
+	def.Reset("Base Shape", "BMI", sBMI);
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_BMI_Heavy", 0.5f, 1.0f, 0.0f, 1.0f));
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_BMI_Lean", 0.0f, 0.5f, 1.0f, 0.0f));
 	mMorphParamDefs.push_back(def);
@@ -305,7 +310,7 @@ void Menu_FaceMapping::Init()
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_Cheekbone_Size", 0.0f, 1.0f, 0.0f, 1.0f));
 	mMorphParamDefs.push_back(def);
 
-	def.Reset("Jaw", "Chin Protrude", 0.5f);
+	def.Reset("Jaw", "Chin Protrude", 0.0f);
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_chin_back", 0.0f, 0.5f, 1.0f, 0.0f));
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_chin_front", 0.5f, 1.0f, 0.0f, 1.0f));
 	mMorphParamDefs.push_back(def);
@@ -314,7 +319,7 @@ void Menu_FaceMapping::Init()
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_chin_level", 0.0f, 1.0f, 0.0f, 1.0f));
 	mMorphParamDefs.push_back(def);
 	
-	def.Reset("Jaw", "Chin Width", 0.5f);
+	def.Reset("Jaw", "Chin Width", 0.0f);
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_chin_narrow", 0.0f, 0.5f, 1.0f, 0.0f));
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_chin_width", 0.5f, 1.0f, 0.0f, 1.0f));
 	mMorphParamDefs.push_back(def);
@@ -340,19 +345,19 @@ void Menu_FaceMapping::Init()
 				{
 					name = name.substr(6);
 				}
-
-				QuickSet("All Shapes", name.c_str(), 0.5f, modelName.c_str(), 0.0f, 1.0f, -5.0f, 5.0f, mMorphParamDefs);
-				QuickSet("All Shapes Post", name.c_str(), 0.5f, modelName.c_str(), 0.0f, 1.0f, -5.0f, 5.0f, mPostMorphParamDefs);
+				if (name != std::string("Mouth_Open") || name != std::string("Brow_Height"))
+					QuickSet("All Shapes", name.c_str(), 0.5f, modelName.c_str(), 0.0f, 1.0f, -5.0f, 5.0f, mMorphParamDefs);
+				if (name == std::string("Mouth_Open") || name == std::string("Brow_Height"))
+					QuickSet("All Shapes Post", name.c_str(), 0.5f, modelName.c_str(), 0.0f, 1.0f, -5.0f, 5.0f, mPostMorphParamDefs);
 			}
 		}
 		SAFE_RELEASE(node);
 	}
 
-	def.Reset("Shape", "BMI", 0.5f);
+	def.Reset("Body Mass Index", "BMI", 0.5f);
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_BMI_Heavy", 0.5f, 1.0f, 0.0f, 1.0f));
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_BMI_Lean", 0.0f, 0.5f, 1.0f, 0.0f));
-	mPostMorphParamDefs.push_back(def);
-	QuickSet("Shape", "Ogre", 0.0f, "shape_Ogre", 0.0f, 1.0f, 0.0f, 1.0f, mPostMorphParamDefs);
+	//mPostMorphParamDefs.push_back(def);
 
 	CPUTSoftwareMesh tempMesh;
 	for (int i = 0; i < 2; i++)
@@ -406,6 +411,27 @@ void Menu_FaceMapping::Init()
 
 	SetLoadHairDef(0, true);
 
+	// Load skin Type
+	mSkinDefs.clear();
+
+	auto AddSkin = [=](const char *fileName, const char *displayName)
+	{
+		// Load file skin (color 1, color 2)
+		// Set display name and two colors
+		// Add to vector mSkinDefs
+		mSkinDefs.push_back(std::string(displayName));
+
+	};
+	AddSkin("Black.ski", "Black Skin People");
+	AddSkin("Yellow.ski", "Yellow Skin People");
+	AddSkin("White.ski", "White Skin People");
+
+	mSkinDefNames = (const char **)malloc(sizeof(const char*) * mSkinDefs.size());
+	for (int i = 0; i < (int)mSkinDefs.size(); i++)
+		mSkinDefNames[i] = mSkinDefs[i].c_str();
+
+	SetLoadSkinDef(0, true);
+
 	// Load Beard Parts
 	auto AddBeardPart = [=](CPUTAssetSet *set, const char *modelName, const char *displayName)
 	{
@@ -424,8 +450,6 @@ void Menu_FaceMapping::Init()
 	AddBeardPart(beardSet, "SoulPatch.mdl", "Soulpatch");
 	AddBeardPart(beardSet, "goatee.mdl", "Goatee");
 	
-	
-
 }
 
 void Menu_FaceMapping::SetLoadHairDef(int hairIndex, bool force)
@@ -439,6 +463,24 @@ void Menu_FaceMapping::SetLoadHairDef(int hairIndex, bool force)
 		{
 			mCurrentHair.CopyFrom(def->SWMesh);
 		}
+		mForceRebuildAll = true;
+	}
+}
+
+void Menu_FaceMapping::SetLoadSkinDef(int skinIndex, bool force)
+{
+	if (mCurrentHairIndex != skinIndex || force)
+	{
+		mCurrentHairIndex = skinIndex;
+		assert(skinIndex >= 0 && skinIndex < (int)mSkinDefs.size());
+		/*SHairDef *def = &mHairDefs[skinIndex];
+		if (def->Model != NULL)
+		{
+			mCurrentHair.CopyFrom(def->SWMesh);
+		}*/
+		// Get skin *def = &mSkinDefs[skinIndex];
+		// if(def != NULL)
+		// { set current skin = skinIndex}
 		mForceRebuildAll = true;
 	}
 }
@@ -488,11 +530,37 @@ void Menu_FaceMapping::LoadFace(const std::string &filename)
 	mForceRebuildAll = true;
 }
 
+void Menu_FaceMapping::LoadGlasses(const std::string &filename)
+{
+	/*ProfileBlockScoped block("Load OBJ");
+	std::string fullFilename;
+	if (fullFilename == mObjGlassesFilename)
+		return;
+	mObjGlassesFilename = fullFilename;
+	mGlassesModel.LoadObjFilename(fullFilename);
+
+	SAFE_RELEASE(mDisplayGlasses);
+	mDisplayGlasses = mGlassesModel.CreateCPUTModel();
+
+	CPUTAssetLibrary *pAssetLibrary = CPUTAssetLibrary::GetAssetLibrary();
+	pAssetLibrary->SetRootRelativeMediaDirectory("MyAssets2");
+	std::string matName = pAssetLibrary->GetMaterialDirectoryName();
+	CPUTFileSystem::CombinePath(matName, "meshpreview.mtl", &matName);
+
+	CPUTMaterial *material = CPUTMaterial::Create(matName);
+	material->OverridePSTexture(0, mGlassesModel.GetTexture());
+	mDisplayGlasses->SetMaterial(0, &material, 1);*/
+}
+
 void Menu_FaceMapping::ActivationChanged(bool active)
 {
 	MenuBase::ActivationChanged(active);
+	CPUTGuiController *pGUI = MenuGlob_GUI();
+	pGUI->CreateButton("Back", MainMenuButton_Back, MENU_CPUT_PANEL_ID);
+
 	if (active && mIsEditingLandmarks)
 	{
+		
 		gMenu_LandmarkEdit->GetOutput(&mFaceModel.Landmarks);
 		mForceRebuildAll = true;
 		mIsEditingLandmarks = false;
@@ -528,6 +596,17 @@ void Menu_FaceMapping::LoadFaceUI()
 
 void Menu_FaceMapping::HandleCPUTEvent(int eventID, int controlID, CPUTControl *control)
 {
+	if (eventID == CPUT_EVENT_DOWN)
+	{
+		switch (controlID)
+		{
+		case MainMenuButton_Back:
+		{
+			MenuController_PopMenu(true);
+		}
+		break;
+		}
+	}
 }
 
 CPUTEventHandledCode Menu_FaceMapping::HandleKeyboardEvent(CPUTKey key, CPUTKeyState state)
@@ -683,7 +762,7 @@ void Menu_FaceMapping::DrawGUI(CPUTRenderParameters &renderParams)
 	ImGui::Spacing();
 	
 	float guiSpacing = 5.0f;
-	if (ImGui::CollapsingHeader("General", NULL, true, true))
+	if (ImGui::CollapsingHeader("General", NULL, true, false))
 	{
 		if (ImGui::Button("Export", ImVec2(0, 0))) 
 			HandleExport();
@@ -731,7 +810,7 @@ void Menu_FaceMapping::DrawGUI(CPUTRenderParameters &renderParams)
 			ResetCameraDefaults();
 		}
 	}
-	if (ImGui::CollapsingHeader("Hair", NULL, true, true))
+	if (ImGui::CollapsingHeader("Hair", NULL, true, false))
 	{
 		int index = mCurrentHairIndex;
 		ImGui::Combo("Hair Style", &index, mHairDefNames, (int)mHairDefs.size());
@@ -749,7 +828,7 @@ void Menu_FaceMapping::DrawGUI(CPUTRenderParameters &renderParams)
 		}
 
 	}
-	if (ImGui::CollapsingHeader("Face Scan", NULL, true, true))
+	if (ImGui::CollapsingHeader("Face Scan", NULL, true, false))
 	{
 		if (ImGui::Button("Load Scan", ImVec2(0, 0)))
 			LoadFaceUI();
@@ -786,7 +865,7 @@ void Menu_FaceMapping::DrawGUI(CPUTRenderParameters &renderParams)
 			mIsEditingLandmarks = true;
 		}
 	}
-	if (ImGui::CollapsingHeader("Head Shaping", NULL, true, true))
+	if (ImGui::CollapsingHeader("Head Shaping", NULL, true, false))
 	{
 		if (ImGui::Button("Reset Shaping"))
 			ResetActiveMorphTargets(false);
@@ -813,9 +892,9 @@ void Menu_FaceMapping::DrawGUI(CPUTRenderParameters &renderParams)
 			ImGui::TreePop();
 	}
 
-	if (ImGui::CollapsingHeader("Blending", NULL, true, true))
+	if (ImGui::CollapsingHeader("Blending", NULL, true, false))
 	{
-		bool colorButtonClicked = false;
+		/*bool colorButtonClicked = false;
 		ImGui::ColorEdit3("Color1", &mTweaks.BlendColor1.r, &colorButtonClicked);
 		if (colorButtonClicked)
 		{
@@ -825,10 +904,16 @@ void Menu_FaceMapping::DrawGUI(CPUTRenderParameters &renderParams)
 		if (colorButtonClicked)
 		{
 			PickColor(mTweaks.BlendColor2, &mTweaks.BlendColor2);
-		}
+		}*/
+		int index = 0;
+		ImGui::Combo("Skin Type", &index, mSkinDefNames, (int)mSkinDefs.size());
+		
+
+		ImGui::SliderFloat("Color 1", &mTweaks.LightColor1, 0.0f, 1.0f);
+		ImGui::SliderFloat("Color 2", &mTweaks.LightColor2, 0.0f, 1.0f);
 	}
 	
-	if (ImGui::CollapsingHeader("Post Head Shaping", NULL, true, true))
+	if (ImGui::CollapsingHeader("Post Head Shaping", NULL, true, false))
 	{
 		if (ImGui::Button("Reset Post Shaping"))
 			ResetActiveMorphTargets(true);
@@ -849,60 +934,31 @@ void Menu_FaceMapping::DrawGUI(CPUTRenderParameters &renderParams)
 				curCategory = &def->Category;
 			}
 			if (nodeOpened)
+			{
 				ImGui::SliderFloat(mPostMorphParamDefs[i].Name.c_str(), &mActivePostMorphParamWeights[i], 0.0f, 1.0f);
+			}
+				
 		}
 		if (nodeOpened)
 			ImGui::TreePop();
 	}
-	if (ImGui::CollapsingHeader("Post Blending"), NULL, true, true)
+	if(ImGui::CollapsingHeader("Adjust Blending", NULL, true, false))
 	{
-		ImGui::Combo("Post Blend Mode", (int*)&mTweaks.PostBlendMode, sPostBlendColorModes, PostBlendColorMode_Count);
-		if (mTweaks.PostBlendMode == PostBlendColorMode_Adjust)
+		if (ImGui::Button("Reset Adjust"))
 		{
-			ImGui::SliderInt("Hue 1", &mTweaks.PostBlendAdjust[0].x, -180, 180);
-			ImGui::SliderInt("Saturation 1", &mTweaks.PostBlendAdjust[0].y, -100, 100);
-			ImGui::SliderInt("Lightness 1", &mTweaks.PostBlendAdjust[0].z, -100, 100);
-
-			ImGui::SliderInt("Hue 2", &mTweaks.PostBlendAdjust[1].x, -180, 180);
-			ImGui::SliderInt("Saturation 2", &mTweaks.PostBlendAdjust[1].y, -100, 100);
-			ImGui::SliderInt("Lightness 2", &mTweaks.PostBlendAdjust[1].z, -100, 100);
-		}
-		else if (mTweaks.PostBlendMode == PostBlendColorMode_Colorize)
-		{
-			ImGui::SliderInt("Hue 1", &mTweaks.PostBlendColorize[0].x, 0, 360);
-			ImGui::SliderInt("Saturation 1", &mTweaks.PostBlendColorize[0].y, 0, 100);
-			ImGui::SliderInt("Lightness 1", &mTweaks.PostBlendColorize[0].z, -100, 100);
-
-			ImGui::SliderInt("Hue 2", &mTweaks.PostBlendColorize[1].x, 0, 360);
-			ImGui::SliderInt("Saturation 2", &mTweaks.PostBlendColorize[1].y, 0, 100);
-			ImGui::SliderInt("Lightness 2", &mTweaks.PostBlendColorize[1].z, -100, 100);
-		}
-		else
-		{
-			// add spacing or the combobox expansion will be covered up
-			for (int i = 0; i < 10; i++)
-				ImGui::Spacing();
-		}
-	}
-	if (ImGui::CollapsingHeader("Head Blending", NULL, true, true))
-	{
-		ImGui::TextColored( ImVec4(1.0f, 0.0f, 1.0f,1.0f), "Create a head, store it, and then blend it with another head");
-		if (mDisplayHead)
-		{
-			if (ImGui::Button("Store Current Head"))
+			for (int i = 0; i < 2; i++)
 			{
-				mOtherHead.CopyFromDX11Mesh((CPUTMeshDX11*)mDisplayHead->GetMesh(0));
-				SAFE_RELEASE(mOtherHeadTexture);
-				mOtherHeadTexture = mPipeline.HeadBlendStage->Output.OutputDiffuse;
-				mPipeline.HeadBlendStage->Output.OutputDiffuse = NULL;
+				mTweaks.PostBlendAdjust[i].x = mTweaks.PostBlendAdjust[i].y = mTweaks.PostBlendAdjust[i].z = 0;
 			}
-			if (mOtherHeadTexture != NULL)
-				ImGui::SliderFloat("Stored Head Weight", &mTweaks.OtherHeadBlend, 0.0f, 1.0f);
-			else
-				mTweaks.OtherHeadBlend = 0.0f;
 		}
-	}
+		ImGui::SliderInt("Hue 1", &mTweaks.PostBlendAdjust[0].x, -180, 180);
+		ImGui::SliderInt("Saturation 1", &mTweaks.PostBlendAdjust[0].y, -100, 100);
+		ImGui::SliderInt("Lightness 1", &mTweaks.PostBlendAdjust[0].z, -100, 100);
 
+		ImGui::SliderInt("Hue 2", &mTweaks.PostBlendAdjust[1].x, -180, 180);
+		ImGui::SliderInt("Saturation 2", &mTweaks.PostBlendAdjust[1].y, -100, 100);
+		ImGui::SliderInt("Lightness 2", &mTweaks.PostBlendAdjust[1].z, -100, 100);
+	}
 	ImGui::End();
 
 	// Create a dummy window for drawing text in the render area
@@ -959,6 +1015,7 @@ void Menu_FaceMapping::CreateMorphTargetEntries(std::vector<MorphTargetEntry> &l
 
 bool Menu_FaceMapping::IsFaceLoaded()
 {
+	//return false;
 	return mFaceModel.GetMesh()->GetVertCount() > 0;
 }
 
@@ -973,6 +1030,12 @@ void Menu_FaceMapping::Render(CPUTRenderParameters &renderParams)
 		renderParams.mpShadowCamera->SetPosition(camPos);
 		renderParams.mpShadowCamera->LookAt(float3(0.0, 0.0f, 0.0f));
 	}
+
+	//if (mDisplayGlasses!=NULL)
+	//{
+	//	//renderParams.mpCamera = (CPUTCamera*)mCameraControllers[mCameraMode]->GetCamera();
+	//	//mDisplayHead->Render(renderParams, 0);
+	//}
 
 	if (IsFaceLoaded())
 	{
@@ -1089,6 +1152,9 @@ void Menu_FaceMapping::Render(CPUTRenderParameters &renderParams)
 		mDisplayHead->Render(renderParams, 0);
 		if (mShowWireframe)
 			mDisplayHead->Render(renderParams, 2);
+
+		//if (mDisplayGlasses)
+			//mDisplayGlasses->Render(renderParams, 0);
 
 		if (hasHair)
 		{
@@ -1283,7 +1349,6 @@ void Menu_FaceMapping::Render(CPUTRenderParameters &renderParams)
 			}
 		}
 	}
-
 	DrawGUI(renderParams);
 }
 

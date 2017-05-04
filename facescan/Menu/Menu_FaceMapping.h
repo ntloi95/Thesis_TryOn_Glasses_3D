@@ -18,6 +18,7 @@
 #include "MenuBase.h"
 
 #include "../CFaceModel.h"
+#include "../CGlassesModel.h"
 #include <vector>
 #include "CPUT.h"
 #include "CPUTRenderTarget.h"
@@ -28,7 +29,8 @@
 #include "CPUTModel.h"
 #include "CPUTSoftwareMesh.h"
 #include "../FaceMap/CPipeline.h"
-
+const float BMI_MIN = 10.0f;
+const float BMI_MAX = 35.0f;
 enum DebugTextureView
 {
 	DebugTextureView_None,
@@ -55,6 +57,12 @@ enum CameraMode
 	CameraMode_Free,
 	CameraMode_Orthographic,
 	CameraMode_Count
+};
+
+
+enum MenuButton
+{
+	MainMenuButton_Back = 0
 };
 
 struct SMorphTweakParamPart
@@ -137,6 +145,8 @@ struct HairInfo
 	CPUTAssetSet *set;
 };
 
+
+
 class Menu_FaceMapping : public MenuBase
 {
 public:
@@ -153,6 +163,8 @@ public:
 
 	void LoadFace(const std::string &filename);
 	
+	// Load Glasses
+	void LoadGlasses(const std::string &filename);
 
 	void Render(CPUTRenderParameters &renderParams);
 
@@ -176,6 +188,7 @@ private:
 	void ResetActiveMorphTargets(bool post);
 
 	void SetLoadHairDef(int hairIndex, bool force = false);
+	void SetLoadSkinDef(int skinIndex, bool force = false);
 
 	void UpdateLayout(CPUTRenderParameters &renderParams);
 	void CreateMorphTargetEntries(std::vector<MorphTargetEntry> &list, std::vector<SMorphTweakParamDef> &defs, std::vector<float> &weights, bool post);
@@ -202,10 +215,10 @@ private:
 	CPUTCameraControllerOrthographic *mCameraControlOrthographic;
 	
 	std::string mObjFilename;
-
 	CPUTModel *mDisplayHead;
 
 	//Add glasses
+	//std::string mObjGlassesFilename;
 	//CPUTModel *mDisplayGlasses;
 
 	CPUTModel *mCPUTLandmarkModel;
@@ -227,6 +240,9 @@ private:
 	std::vector<SHairDef> mHairDefs;
 	CPUTSoftwareMesh mCurrentHair;
 
+	const char **mSkinDefNames;
+	std::vector<std::string> mSkinDefs;
+
 	// Beard
 	std::vector<SHairDef> mBeardDefs;
 	std::vector<bool> mBeardEnabled;
@@ -243,6 +259,7 @@ private:
 	bool mSkipSeamFill;
 
 	int mCurrentHairIndex;
+	int mCurrentSkinIndex;
 	bool mHideCubeMap;
 	bool mShowWireframe;
 	bool mShowMapLandmarks;
@@ -267,6 +284,9 @@ private:
 
 	bool mIsEditingLandmarks;
 	
+	//BMI
+	float mHeight;
+	float mWeight;
 };
 
 #endif

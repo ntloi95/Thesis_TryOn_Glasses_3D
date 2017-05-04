@@ -174,8 +174,8 @@ void Menu_GlassesPreview::Render(CPUTRenderParameters &renderParams)
 			float3 KM2_T(0, 0, 0);
 			float3 KTD1(0, 0, 0);
 			float3 KTD2(0, 0, 0);
-			float3 KM1(0, INT_MAX, 0);
-			float3 KM2(0, INT_MAX, 0);
+			float3 KM1(0, (float)INT_MAX, 0);
+			float3 KM2(0, (float)INT_MAX, 0);
 
 			for (int i = 0; i < vertex_count; i++) {
 				if (false == CopyVerticesFromMesh(&v, NULL, NULL, i, -1, -1, verts.pData, item))
