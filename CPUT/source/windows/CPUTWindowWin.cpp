@@ -1025,7 +1025,6 @@ CPUTMouseState CPUTWindowWin::ConvertMouseState(WPARAM wParam)
     if( wParam & MK_RBUTTON)
         eState = (CPUTMouseState) (eState | static_cast<int>(CPUT_MOUSE_RIGHT_DOWN));
 
-
     return eState;
 }
 
@@ -1034,19 +1033,7 @@ CPUTMouseState CPUTWindowWin::ConvertMouseState(WPARAM wParam)
 int CPUTWindowWin::StartMessageLoop()
 {
     // Clear message queue
-MSG msg;
-//for(;;)
-//{
-//    while( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ) )
-//    {
-//        if (msg.message == WM_DESTROY)
-//            return CPUT_ERROR;
-//        TranslateMessage( &msg );
-//        DispatchMessage( &msg );
-    //
-//    }
-//}
-
+	MSG msg;
     //
     // Message pump
     //
@@ -1081,7 +1068,7 @@ MSG msg;
     //
     // Drain out the rest of the message queue.
     //
-    while( PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) )
+    while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) )
     {
         TranslateMessage( &msg );
         DispatchMessage( &msg );
@@ -1097,9 +1084,7 @@ MSG msg;
 
     delete[] wstr;
 
-    //
     // Set the window handle to NULL to indicate window shutdown is complete
-    //
     mhWnd = NULL;
 
     // return code

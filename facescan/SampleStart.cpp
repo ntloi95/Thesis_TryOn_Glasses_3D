@@ -59,10 +59,8 @@ void MySample::Create()
 	ImGui_ImplDX11_Init(GetHWnd(), GetDevice(), GetContext());
 	CPUTWindowWin::SetWinProcOverride(MySample_WndProcCallback);
 	
-    
 	int windowWidth, windowHeight;
 	mpWindow->GetClientDimensions(&windowWidth, &windowHeight);
-
 	SampleUtil_Init();
 	MenuGlob_Init();
 	MenuGlob_SetScreenDim(windowWidth, windowHeight);
@@ -75,36 +73,7 @@ void MySample::Create()
 
 #ifndef DISABLE_RSSDK
 	MenuController_PushMenu(gMenu_Scan);
-
-	// go directly to the face mapping menu
-	//std::string debugFace;
-	//CPUTFileSystem::CombinePath(userDir, "joe.obj", &debugFace);
-	//gMenu_FaceMapping->LoadFace(debugFace);
-	//MenuController_PushMenu(gMenu_FaceMapping);
-
-	// Go directly to the face scan preview menu
-	//gMenu_FaceScanPreview->LoadFaceObj("", true);
-	//gMenu_FaceScanPreview->SetFaceScanMode( FaceScanPreviewMode_ApproveScan );
-	//MenuController_PushMenu(gMenu_FaceScanPreview);
-	
-#else
-	//std::string debugFace;
-	//CPUTFileSystem::CombinePath(userDir, "joe_sr300_1.obj", &debugFace);
-	//gMenu_FaceMapping->LoadFace( debugFace );
-	//MenuController_PushMenu(gMenu_FaceMapping);
-
-	//go directly to the face preview menu
-	//gMenu_FaceScanPreview->LoadFaceObj("", true);
-	//MenuController_PushMenu(gMenu_FaceScanPreview);
-	
-	// go to the edit landmark menu
-	//static CFaceModel faceModel;
-	//faceModel.LoadObjFilename(debugFace);
-	//gMenu_LandmarkEdit->SetInput(&faceModel.Landmarks, &faceModel.Landmarks, NULL, &faceModel);
-	//MenuController_PushMenu(gMenu_LandmarkEdit);
-
 #endif
-
 	MenuGlob_GUI()->SetActivePanel(MENU_CPUT_PANEL_ID);
 
 }
@@ -253,11 +222,10 @@ void MySample::Render(double deltaSeconds)
     UpdatePerFrameConstantBuffer(renderParams, deltaSeconds);
 
     // Clear back buffer
-    const float clearColor[] = { 0.0993f, 0.0993f, 0.0993f, 1.0f };
+    const float clearColor[] = { 0.0f, 0.58f, 0.60f, 1.0f };
     mpContext->ClearRenderTargetView( mpBackBufferRTV,  clearColor );
     mpContext->ClearDepthStencilView( mpDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 0.0f, 0);
-
-    if(mpCameraController->GetCamera() == mpShadowCamera)
+	    if(mpCameraController->GetCamera() == mpShadowCamera)
     {
         mpDebugSprite->DrawSprite(renderParams);
     }

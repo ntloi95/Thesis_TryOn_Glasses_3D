@@ -17,17 +17,7 @@
 #include "SampleStart.h"
 
 #if defined CPUT_FOR_DX11
-const std::string WINDOW_TITLE = "FaceScan 2.0";
-#elif defined CPUT_FOR_OGL
-const std::string WINDOW_TITLE = "CPUTWindow OpenGL 4";
-#endif
-
-#ifdef CPUT_OS_LINUX
-const std::string GUI_DIR = "../Media/gui_assets/";
-const std::string SYSTEM_DIR = "../Media/System/";
-const std::string MEDIA_DIR = "../Media/Geartower/";
-const std::string DEFAULT_SCENE = "../Media/defaultscene.scene";
-#else
+const std::string WINDOW_TITLE = "Try On Glasses 1.0";
 const std::string GUI_DIR = "../../../Media/gui_assets/";
 const std::string SYSTEM_DIR = "../../../Media/System/";
 #endif
@@ -37,29 +27,14 @@ void GLAPIENTRY openglCallbackFunction(GLenum source, GLenum type, GLuint id, GL
 	GLsizei length, const GLchar* message, void const* userParam);
 #endif
 
-/*#ifdef _DEBUG
-#pragma warning(disable:4074)//initializers put in compiler reserved initialization area
-#pragma init_seg(compiler)//global objects in this file get constructed very early on
-struct CrtBreakAllocSetter {
-CrtBreakAllocSetter() {
-//_crtBreakAlloc = 67844;
-}
-};
-CrtBreakAllocSetter g_crtBreakAllocSetter;
-#endif//_DEBUG*/
-
-// Application entry point.  Execution begins here.
-//-----------------------------------------------------------------------------
+// Application entrypoint.  Execution begins here.
+//----------------------------- ------------------------------------------------
 int main(int argc, char **argv)
 {
 #ifdef DEBUG
 #ifdef CPUT_OS_WINDOWS
-	// tell VS to report leaks at any exit of the program
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	//http://msdn.microsoft.com/en-us/library/x98tx3cf%28v=vs.100%29.aspx
-	//Add a watch for “{,,msvcr110d.dll}_crtBreakAlloc” to the watch window
-	//Set the value of the watch to the memory allocation number reported by your sample at exit.
-	//Note that the “msvcr110d.dll” is for MSVC2012.  Other versions of MSVC use different versions of this dll; you’ll need to specify the appropriate version.
+
 #endif
 #endif
 	CPUTResult result = CPUT_SUCCESS;

@@ -452,13 +452,16 @@ CPUTResult CPUT_DX11::CreateContext()
 
     // Create a render target view
     ID3D11Texture2D *pBackBuffer = NULL;
-    hr = mpSwapChain->GetBuffer( 0, __uuidof( ID3D11Texture2D ), ( LPVOID* )&pBackBuffer );
+	hr = mpSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
     ASSERT( SUCCEEDED(hr), "Failed getting back buffer." );
 
-    hr = mpD3dDevice->CreateRenderTargetView( pBackBuffer, NULL, &mpBackBufferRTV );
+	hr = mpD3dDevice->CreateRenderTargetView(pBackBuffer, NULL, &mpBackBufferRTV);
     pBackBuffer->Release();
     ASSERT( SUCCEEDED(hr), "Failed creating render target view." );
     CPUTSetDebugName( mpBackBufferRTV, "BackBufferView" );
+
+
+	HBITMAP hImage = (HBITMAP)LoadImage(NULL, L"background.jpg", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 
     // create depth/stencil buffer
     result = CreateAndBindDepthBuffer(width, height);

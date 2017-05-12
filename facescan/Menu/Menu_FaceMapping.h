@@ -31,6 +31,9 @@
 #include "../FaceMap/CPipeline.h"
 const float BMI_MIN = 10.0f;
 const float BMI_MAX = 35.0f;
+#define MALE 0
+#define FEMALE 1
+
 enum DebugTextureView
 {
 	DebugTextureView_None,
@@ -150,7 +153,7 @@ struct HairInfo
 class Menu_FaceMapping : public MenuBase
 {
 public:
-	virtual void Init();
+	virtual void Init(){};
 	virtual void Shutdown();
 
 	void HandleCPUTEvent(int eventID, int controlID, CPUTControl *control);
@@ -169,6 +172,7 @@ public:
 	void Render(CPUTRenderParameters &renderParams);
 
 	bool IsFaceLoaded();
+	bool mGender;
 
 private:
 

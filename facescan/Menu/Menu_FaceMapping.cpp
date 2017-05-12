@@ -122,7 +122,7 @@ void Menu_FaceMapping::SetDefaultDebug()
 	mShowMapLandmarks = true;
 	mRenderLandmarkMesh = false;
 	mRenderMorphedLandmarkMesh = false;
-	mRenderHeadLandmarks = true;
+	mRenderHeadLandmarks = false;
 	mShowWireframe = false;
 	mFullscreenDebugTextureViewer = true;
 	mUseOrthoCamera = false;
@@ -169,7 +169,7 @@ void Menu_FaceMapping::ResetCameraDefaults()
 }
 
 
-
+/*
 void Menu_FaceMapping::Init()
 {
 	MenuBase::Init();
@@ -395,12 +395,13 @@ void Menu_FaceMapping::Init()
 	};
 
 
-	mHairDefs.push_back(SHairDef(NULL, "Hairless", NULL));
+	AddHair(hairHelmet1Set, "hair1_retopo.mdl", "Helmet Short");
 
 	AddHair(hairShortSet, "ShortHair.mdl", "Short");
 	AddHair(hairMediumSet, "HairMedium.mdl", "Medium");
 	AddHair(hairLongSet, "Long_Hair.mdl", "Long");
-	AddHair(hairHelmet1Set, "hair1_retopo.mdl", "Helmet Short");
+	mHairDefs.push_back(SHairDef(NULL, "Hairless", NULL));
+	
     AddHair(hairHelmet2Set, "hair2.mdl", "Helmet 2");
     AddHair(hairHelmet3Set, "hair3.mdl", "Helmet 3");
     AddHair(hairHelmet4Set, "hair4.mdl", "Helmet 4");
@@ -408,7 +409,7 @@ void Menu_FaceMapping::Init()
 	mHairDefNames = (const char **)malloc(sizeof(const char*) * mHairDefs.size());
 	for (int i = 0; i < (int)mHairDefs.size(); i++)
 		mHairDefNames[i] = mHairDefs[i].Name.c_str();
-
+	
 	SetLoadHairDef(0, true);
 
 	// Load skin Type
@@ -451,7 +452,7 @@ void Menu_FaceMapping::Init()
 	AddBeardPart(beardSet, "goatee.mdl", "Goatee");
 	
 }
-
+*/
 void Menu_FaceMapping::SetLoadHairDef(int hairIndex, bool force)
 {
 	if (mCurrentHairIndex != hairIndex || force)
@@ -556,11 +557,10 @@ void Menu_FaceMapping::ActivationChanged(bool active)
 {
 	MenuBase::ActivationChanged(active);
 	CPUTGuiController *pGUI = MenuGlob_GUI();
-	pGUI->CreateButton("Back", MainMenuButton_Back, MENU_CPUT_PANEL_ID);
-
+	
 	if (active && mIsEditingLandmarks)
 	{
-		
+		pGUI->CreateButton("Back", MainMenuButton_Back, MENU_CPUT_PANEL_ID);
 		gMenu_LandmarkEdit->GetOutput(&mFaceModel.Landmarks);
 		mForceRebuildAll = true;
 		mIsEditingLandmarks = false;
@@ -907,7 +907,6 @@ void Menu_FaceMapping::DrawGUI(CPUTRenderParameters &renderParams)
 		}*/
 		int index = 0;
 		ImGui::Combo("Skin Type", &index, mSkinDefNames, (int)mSkinDefs.size());
-		
 
 		ImGui::SliderFloat("Color 1", &mTweaks.LightColor1, 0.0f, 1.0f);
 		ImGui::SliderFloat("Color 2", &mTweaks.LightColor2, 0.0f, 1.0f);
@@ -951,12 +950,10 @@ void Menu_FaceMapping::DrawGUI(CPUTRenderParameters &renderParams)
 				mTweaks.PostBlendAdjust[i].x = mTweaks.PostBlendAdjust[i].y = mTweaks.PostBlendAdjust[i].z = 0;
 			}
 		}
-		ImGui::SliderInt("Hue 1", &mTweaks.PostBlendAdjust[0].x, -180, 180);
-		ImGui::SliderInt("Saturation 1", &mTweaks.PostBlendAdjust[0].y, -100, 100);
+		ImGui::SliderInt("Vibrance 1", &mTweaks.PostBlendAdjust[0].y, -100, 100);
 		ImGui::SliderInt("Lightness 1", &mTweaks.PostBlendAdjust[0].z, -100, 100);
 
-		ImGui::SliderInt("Hue 2", &mTweaks.PostBlendAdjust[1].x, -180, 180);
-		ImGui::SliderInt("Saturation 2", &mTweaks.PostBlendAdjust[1].y, -100, 100);
+		ImGui::SliderInt("Vibrance 2", &mTweaks.PostBlendAdjust[1].y, -100, 100);
 		ImGui::SliderInt("Lightness 2", &mTweaks.PostBlendAdjust[1].z, -100, 100);
 	}
 	ImGui::End();
