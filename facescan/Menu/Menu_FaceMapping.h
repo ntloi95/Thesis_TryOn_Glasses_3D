@@ -15,6 +15,7 @@
 //--------------------------------------------------------------------------------------
 #ifndef __MENU_FACEMAPPING__
 #define __MENU_FACEMAPPING__
+#ifndef DESIGN_UI
 #include "MenuBase.h"
 
 #include "../CFaceModel.h"
@@ -153,7 +154,7 @@ struct HairInfo
 class Menu_FaceMapping : public MenuBase
 {
 public:
-	virtual void Init(){};
+	virtual void Init();
 	virtual void Shutdown();
 
 	void HandleCPUTEvent(int eventID, int controlID, CPUTControl *control);
@@ -292,5 +293,13 @@ private:
 	float mHeight;
 	float mWeight;
 };
+#else
+class Menu_FaceMapping : public MenuBase
+{
+public:
+	virtual void Init(){};
+	virtual void Shutdown(){};
+};
+#endif
 
 #endif

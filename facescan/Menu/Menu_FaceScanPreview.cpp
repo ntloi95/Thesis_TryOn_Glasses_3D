@@ -97,6 +97,7 @@ void Menu_FaceScanPreview::HandleCPUTEvent(int eventID, int controlID, CPUTContr
 		} break;
 		case MainMenuIds_Accept:
 		{
+#ifndef DESIGN_UI
 			char buffer[256];
 			time_t rawtime;
 			struct tm * timeinfo;
@@ -125,6 +126,7 @@ void Menu_FaceScanPreview::HandleCPUTEvent(int eventID, int controlID, CPUTContr
 
 			gMenu_FaceMapping->LoadFace(ofnFilename);
 			MenuController_PushMenu(gMenu_FaceMapping, true);
+#endif
 		} break;
 		case MainMenuIds_Back:
 		{

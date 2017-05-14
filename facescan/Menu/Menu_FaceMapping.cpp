@@ -13,6 +13,7 @@
 // assume any responsibility for any errors which may appear in this software nor any
 // responsibility to update it.
 //--------------------------------------------------------------------------------------
+#ifndef DESIGN_UI
 #include "Menu_FaceMapping.h"
 #include "MenuController.h"
 #include "CPUTGuiControllerDX11.h"
@@ -169,7 +170,6 @@ void Menu_FaceMapping::ResetCameraDefaults()
 }
 
 
-/*
 void Menu_FaceMapping::Init()
 {
 	MenuBase::Init();
@@ -452,7 +452,7 @@ void Menu_FaceMapping::Init()
 	AddBeardPart(beardSet, "goatee.mdl", "Goatee");
 	
 }
-*/
+
 void Menu_FaceMapping::SetLoadHairDef(int hairIndex, bool force)
 {
 	if (mCurrentHairIndex != hairIndex || force)
@@ -1349,3 +1349,4 @@ void Menu_FaceMapping::Render(CPUTRenderParameters &renderParams)
 	DrawGUI(renderParams);
 }
 
+#endif

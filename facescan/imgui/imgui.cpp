@@ -7934,6 +7934,13 @@ bool ImGui::InputInt4(const char* label, int v[4], ImGuiInputTextFlags extra_fla
     return InputIntN(label, v, 4, extra_flags);
 }
 
+void ImGui::BlankLine(int height)
+{
+	ImVec2 pos = ImGui::GetCursorPos();
+	pos.y += height;
+	ImGui::SetCursorPos(pos);
+}
+
 static bool Items_ArrayGetter(void* data, int idx, const char** out_text)
 {
     const char** items = (const char**)data;

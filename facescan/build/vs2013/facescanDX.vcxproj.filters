@@ -63,6 +63,18 @@
       <Filter>Menu</Filter>
     </ClCompile>
     <ClCompile Include="..\..\CGlassesModel.cpp" />
+    <ClCompile Include="..\..\Menu\Menu_AddNewGlasses.cpp">
+      <Filter>Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Menu\Menu_NewUserRegister.cpp">
+      <Filter>Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Menu\Menu_ViewGlassesList.cpp">
+      <Filter>Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Menu\Menu_ViewUserList.cpp">
+      <Filter>Menu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\SampleStart.h" />
@@ -139,6 +151,18 @@
       <Filter>Menu</Filter>
     </ClInclude>
     <ClInclude Include="..\..\CGlassesModel.h" />
+    <ClInclude Include="..\..\Menu\Menu_AddNewGlasses.h">
+      <Filter>Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Menu\Menu_NewUserRegister.h">
+      <Filter>Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Menu\Menu_ViewGlassesList.h">
+      <Filter>Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Menu\Menu_ViewUserList.h">
+      <Filter>Menu</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Menu">

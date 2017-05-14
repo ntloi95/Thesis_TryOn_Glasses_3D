@@ -335,7 +335,6 @@ ViewportScoped::~ViewportScoped()
 	mContext->RSSetViewports(mStoredViewportCount, mStoredViewports);
 }
 
-
 void CopyOBJDataToSoftwareMesh(tObjModel *objModel, CPUTSoftwareMesh *softwareMesh)
 {
 	int vertexCount = (int)objModel->m_vertices.size();

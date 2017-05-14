@@ -17,6 +17,14 @@
       <Configuration>Debug_DX</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="DesignUI_DX|Win32">
+      <Configuration>DesignUI_DX</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="DesignUI_DX|x64">
+      <Configuration>DesignUI_DX</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release_DX_NO_RS|Win32">
       <Configuration>Release_DX_NO_RS</Configuration>
       <Platform>Win32</Platform>
@@ -79,6 +87,13 @@
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DesignUI_DX|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_DX|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -87,6 +102,13 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_DX_NO_RS|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DesignUI_DX|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
@@ -114,10 +136,16 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_DX_NO_RS|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DesignUI_DX|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release_DX|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_DX_NO_RS|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DesignUI_DX|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -175,6 +203,15 @@
     <IncludePath>$(RSSDK_DIR)\include;$(RSSDK_DIR)\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\..\CPUT\middleware\DirectXTex\DirectXTex\Bin\Desktop_2013\$(Platform)\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DesignUI_DX|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\$(PlatformToolset)\x32\</OutDir>
+    <IntDir>..\intermediate\x32\Release_DX\$(PlatformToolset)\</IntDir>
+    <TargetName>facescanDX</TargetName>
+    <TargetExt>.exe</TargetExt>
+    <IncludePath>$(RSSDK_DIR)\include;$(RSSDK_DIR)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\..\CPUT\middleware\DirectXTex\DirectXTex\Bin\Desktop_2013\$(Platform)\Release;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_DX|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(PlatformToolset)\x64\</OutDir>
@@ -185,6 +222,15 @@
     <LibraryPath>$(RSSDK_DIR)\lib\$(Platform);$(SolutionDir)\..\CPUT\middleware\DirectXTex\DirectXTex\Bin\Desktop_2013\$(Platform)\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_DX_NO_RS|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\$(PlatformToolset)\x64\</OutDir>
+    <IntDir>..\intermediate\x64\Release_DX\$(PlatformToolset)\</IntDir>
+    <TargetName>facescanDX_NoRS</TargetName>
+    <TargetExt>.exe</TargetExt>
+    <IncludePath>$(RSSDK_DIR)\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <LibraryPath>$(SolutionDir)\..\CPUT\middleware\DirectXTex\DirectXTex\Bin\Desktop_2013\$(Platform)\Release;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DesignUI_DX|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(PlatformToolset)\x64\</OutDir>
     <IntDir>..\intermediate\x64\Release_DX\$(PlatformToolset)\</IntDir>
@@ -325,6 +371,31 @@
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DesignUI_DX|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>DISABLE_RSSDK;CPUT_FOR_DX11;CPUT_OS_WINDOWS;NOMINMAX;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\CPUT\include;..\..\..\CPUT\middleware\glew-1.12.0\include;..\..\..\CPUT\middleware;..\..\..\CPUT\include\DirectX;..\..\..\CPUT\include\Windows;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Oi /Ob2 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;directxtex.lib;dxgi.liblibpxc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\CPUT\lib\x32\$(PlatformToolset)\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_DX|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -377,6 +448,33 @@
       <AdditionalOptions>/NODEFAULTLIB:library %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DesignUI_DX|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>DISABLE_RSSDK;CPUT_FOR_DX11;CPUT_OS_WINDOWS;NOMINMAX;_CRT_SECURE_NO_WARNINGS;_WIN32_WINNT=0x0600;DESIGN_UI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\CPUT\include;..\..\..\CPUT\middleware\glew-1.12.0\include;..\..\..\CPUT\middleware;..\..\..\CPUT\include\DirectX;..\..\..\CPUT\include\Windows;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/Oi /Ob2 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;directxtex.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\CPUT\lib\x64\$(PlatformToolset)\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalOptions>/NODEFAULTLIB:library %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\CGlassesModel.h" />
     <ClInclude Include="..\..\Facemap\CDisplacementMapStage.h" />
@@ -396,13 +494,17 @@
     <ClInclude Include="..\..\Menu\MenuBase.h" />
     <ClInclude Include="..\..\Menu\MenuController.h" />
     <ClInclude Include="..\..\Menu\MenuGlob.h" />
+    <ClInclude Include="..\..\Menu\Menu_AddNewGlasses.h" />
     <ClInclude Include="..\..\Menu\Menu_FaceMapping.h" />
     <ClInclude Include="..\..\Menu\Menu_FaceScanPreview.h" />
     <ClInclude Include="..\..\Menu\Menu_Function.h" />
     <ClInclude Include="..\..\Menu\Menu_GlassesPreview.h" />
     <ClInclude Include="..\..\Menu\Menu_LandmarkEdit.h" />
+    <ClInclude Include="..\..\Menu\Menu_NewUserRegister.h" />
     <ClInclude Include="..\..\Menu\Menu_Scan.h" />
     <ClInclude Include="..\..\CFaceModel.h" />
+    <ClInclude Include="..\..\Menu\Menu_ViewGlassesList.h" />
+    <ClInclude Include="..\..\Menu\Menu_ViewUserList.h" />
     <ClInclude Include="..\..\OBJExporter.h" />
     <ClInclude Include="..\..\ObjLoader.h" />
     <ClInclude Include="..\..\SampleStart.h" />
@@ -424,13 +526,17 @@
     <ClCompile Include="..\..\imgui\imgui_impl_dx11.cpp" />
     <ClCompile Include="..\..\Menu\MenuController.cpp" />
     <ClCompile Include="..\..\Menu\MenuGlob.cpp" />
+    <ClCompile Include="..\..\Menu\Menu_AddNewGlasses.cpp" />
     <ClCompile Include="..\..\Menu\Menu_FaceMapping.cpp" />
     <ClCompile Include="..\..\Menu\Menu_FaceScanPreview.cpp" />
     <ClCompile Include="..\..\Menu\Menu_Function.cpp" />
     <ClCompile Include="..\..\Menu\Menu_GlassesPreview.cpp" />
     <ClCompile Include="..\..\Menu\Menu_LandmarkEdit.cpp" />
+    <ClCompile Include="..\..\Menu\Menu_NewUserRegister.cpp" />
     <ClCompile Include="..\..\Menu\Menu_Scan.cpp" />
     <ClCompile Include="..\..\CFaceModel.cpp" />
+    <ClCompile Include="..\..\Menu\Menu_ViewGlassesList.cpp" />
+    <ClCompile Include="..\..\Menu\Menu_ViewUserList.cpp" />
     <ClCompile Include="..\..\OBJExporter.cpp" />
     <ClCompile Include="..\..\ObjLoader.cpp" />
     <ClCompile Include="..\..\SampleStart.cpp" />

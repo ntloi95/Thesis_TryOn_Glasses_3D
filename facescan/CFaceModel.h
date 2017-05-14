@@ -68,5 +68,4 @@ private:
 	bool LoadLandmarks( const std::string &filename, std::vector<float3> &outMap, int formatVersion = 0 );
 	
 };
-
 #endif // __OBJ_MODEL__

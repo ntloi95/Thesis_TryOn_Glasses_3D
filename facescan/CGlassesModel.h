@@ -1,3 +1,4 @@
+
 #ifndef __OBJ_GLASSES_MODEL__
 #define __OBJ_GLASSES_MODEL__
 
@@ -49,5 +50,4 @@ private:
 	CPUTTexture *mTexture;
 
 };
-
 #endif

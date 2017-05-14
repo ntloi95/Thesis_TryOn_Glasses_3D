@@ -22,6 +22,10 @@
 #include "Menu_LandmarkEdit.h"
 #include "Menu_Function.h"
 #include "Menu_GlassesPreview.h"
+#include "Menu_AddNewGlasses.h"
+#include "Menu_NewUserRegister.h"
+#include "Menu_ViewGlassesList.h"
+#include "Menu_ViewUserList.h"
 
 #define MENU_CPUT_PANEL_ID 100
 
@@ -31,6 +35,11 @@ extern Menu_FaceMapping *gMenu_FaceMapping;
 extern Menu_LandmarkEdit *gMenu_LandmarkEdit;
 extern Menu_Function *gMenu_Function;
 extern Menu_GlassesPreview *gMenu_GlassesPreview;
+extern Menu_AddNewGlasses *gMenu_AddNewGlasses;
+extern Menu_NewUserRegister *gMenu_NewUserRegister;
+extern Menu_ViewGlassesList *gMenu_ViewGlassesList;
+extern Menu_ViewUserList *gMenu_ViewUserList;
+
 
 void MenuGlob_Init();
 void MenuGlob_Shutdown();

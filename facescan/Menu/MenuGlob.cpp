@@ -24,6 +24,10 @@ Menu_FaceMapping *gMenu_FaceMapping;
 Menu_LandmarkEdit *gMenu_LandmarkEdit;
 Menu_Function *gMenu_Function;
 Menu_GlassesPreview *gMenu_GlassesPreview;
+Menu_AddNewGlasses *gMenu_AddNewGlasses;
+Menu_NewUserRegister *gMenu_NewUserRegister;
+Menu_ViewGlassesList *gMenu_ViewGlassesList;
+Menu_ViewUserList *gMenu_ViewUserList;
 
 static int gScreenWidth = 0;
 static int gScreenHeight = 0;
@@ -36,13 +40,21 @@ void MenuGlob_Init()
 	gMenu_LandmarkEdit = new Menu_LandmarkEdit();
 	gMenu_Function = new Menu_Function();
 	gMenu_GlassesPreview = new Menu_GlassesPreview();
+	gMenu_AddNewGlasses = new Menu_AddNewGlasses();
+	gMenu_NewUserRegister = new Menu_NewUserRegister();
+	gMenu_ViewGlassesList = new Menu_ViewGlassesList();
+	gMenu_ViewUserList = new Menu_ViewUserList();
 
-	gMenu_Scan->Init();
-	gMenu_FaceScanPreview->Init();
-	gMenu_FaceMapping->Init();
-	gMenu_LandmarkEdit->Init();
-	gMenu_Function->Init();
-	gMenu_GlassesPreview->Init();
+	//gMenu_Scan->Init();
+	//gMenu_FaceScanPreview->Init();
+	//gMenu_FaceMapping->Init();
+	//gMenu_LandmarkEdit->Init();
+	//gMenu_Function->Init();
+	//gMenu_GlassesPreview->Init();
+	//gMenu_AddNewGlasses->Init();
+	gMenu_NewUserRegister->Init();
+	//gMenu_ViewGlassesList->Init();
+	//gMenu_ViewUserList->Init();
 }
 
 void MenuGlob_Shutdown()
