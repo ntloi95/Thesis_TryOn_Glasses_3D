@@ -70,7 +70,9 @@ void MySample::Create()
 	
 	//Create Menu Function here, 2 functions: Face, Glasses
 	//MenuController_PushMenu(gMenu_Function);
-	MenuController_PushMenu(gMenu_NewUserRegister);
+	//MenuController_PushMenu(gMenu_NewUserRegister);
+	//MenuController_PushMenu(gMenu_AddNewGlasses);
+	MenuController_PushMenu(gMenu_ViewGlassesList);
 
 #ifndef DISABLE_RSSDK
 	MenuController_PushMenu(gMenu_Scan);
@@ -223,13 +225,12 @@ void MySample::Render(double deltaSeconds)
     UpdatePerFrameConstantBuffer(renderParams, deltaSeconds);
 
     // Clear back buffer
-    const float clearColor[] = { 0.0f, 0.58f, 0.60f, 1.0f };
-    mpContext->ClearRenderTargetView( mpBackBufferRTV,  clearColor );
+	mpContext->ClearRenderTargetView(mpBackBufferRTV, (float*)&ImColor(114, 144, 154));
     mpContext->ClearDepthStencilView( mpDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 0.0f, 0);
 	    if(mpCameraController->GetCamera() == mpShadowCamera)
-    {
-        mpDebugSprite->DrawSprite(renderParams);
-    }
+		{
+			mpDebugSprite->DrawSprite(renderParams);
+		}
 
 	MenuController_Render(renderParams);
 	CPUTDrawGUI();

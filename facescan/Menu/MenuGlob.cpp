@@ -52,8 +52,8 @@ void MenuGlob_Init()
 	//gMenu_Function->Init();
 	//gMenu_GlassesPreview->Init();
 	//gMenu_AddNewGlasses->Init();
-	gMenu_NewUserRegister->Init();
-	//gMenu_ViewGlassesList->Init();
+	//gMenu_NewUserRegister->Init();
+	gMenu_ViewGlassesList->Init();
 	//gMenu_ViewUserList->Init();
 }
 

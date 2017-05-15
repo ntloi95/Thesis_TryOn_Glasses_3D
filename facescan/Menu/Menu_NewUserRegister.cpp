@@ -49,8 +49,9 @@ void Menu_NewUserRegister::DrawGUI(CPUTRenderParameters &renderParams)
 	ImGui::InputText("User name", tempbuffer, 64, ImGuiInputTextFlags_CharsUppercase);
 	ImGui::InputText("Email", tempbuffer, 255, ImGuiInputTextFlags_CharsNoBlank);
 	ImGui::InputText("Address", tempbuffer, 255);
+	ImGui::Combo("Gender", &tempint, "Male\0Female\0\0");
 	ImGui::InputTextMultiline("Description", tempbuffer, 255);
-	ImGui::Combo("Gender", &tempint, "Male\0Female\0\0");	
+	
 	ImGui::BlankLine(20);
 	ImGui::Text("Generated User ID:");
 	ImGui::BlankLine(10);
