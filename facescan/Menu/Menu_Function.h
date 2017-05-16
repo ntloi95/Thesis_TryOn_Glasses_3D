@@ -18,15 +18,8 @@
 #include "../CFaceModel.h"
 #include "../CGlassesModel.h"
 #include "../SampleUtil.h"
-const int RECENT_FUNCTION_COUNT = 7;
-#define USER_REGISTER 100
-#define VIEW_LIST_USER 111
-#define SCAN_NEW 123
-#define SCAN_EDIT 124
-#define GLASSES_REGISTER 125
-#define VIEW_LIST_GLASSES 126
-#define GLASSES_EDIT 127
-#define GLASSES_REMOVE 128
+#include <map>
+const int RECENT_FUNCTION_COUNT = 4;
 
 class Menu_Function : public MenuBase
 {
@@ -37,12 +30,16 @@ public:
 	virtual void Init();
 	void Render(CPUTRenderParameters &renderParams);
 	virtual void HandleCPUTEvent(int eventID, int controlID, CPUTControl *control);
+	virtual CPUTEventHandledCode HandleMouseEvent(int x, int y, int wheel, CPUTMouseState state, CPUTEventID message);
 	virtual void ActivationChanged(bool active);
 private:
 	void DrawGUI(CPUTRenderParameters &renderParams);
 	void UpdateLayout(CPUTRenderParameters &renderParams);
 	float mImGUIMenuWidth;
 	float mWindowPadding;
+	std::map<int, std::string> mTooltip;
+	std::map<int, std::string> mNameFunction;
+	int mRecentFunction[RECENT_FUNCTION_COUNT];
 };
 
 #endif __MENU_FUCTION__

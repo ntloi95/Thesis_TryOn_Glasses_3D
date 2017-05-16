@@ -1,5 +1,8 @@
 #include "Menu_ViewUserList.h"
 #include "../imgui/imgui_impl_dx11.h"
+#include "MenuGlob.h"
+#include "MenuController.h"
+#define BTNBACK 111
 
 Menu_ViewUserList::Menu_ViewUserList()
 {
@@ -21,11 +24,24 @@ void Menu_ViewUserList::Render(CPUTRenderParameters &renderParams)
 }
 void Menu_ViewUserList::HandleCPUTEvent(int eventID, int controlID, CPUTControl *control)
 {
-
+	if (eventID == CPUT_EVENT_DOWN)
+	{
+		switch (controlID)
+		{
+		case BTNBACK:
+			MenuController_PopMenu(true);
+			break;
+		}
+	}
 }
 void Menu_ViewUserList::ActivationChanged(bool active)
 {
-
+	MenuBase::ActivationChanged(active);
+	if (active)
+	{
+		CPUTGuiController *pGUI = MenuGlob_GUI();
+		pGUI->CreateButton("Back", BTNBACK, MENU_CPUT_PANEL_ID);
+	}
 }
 
 void Menu_ViewUserList::DrawGUI(CPUTRenderParameters &renderParams)

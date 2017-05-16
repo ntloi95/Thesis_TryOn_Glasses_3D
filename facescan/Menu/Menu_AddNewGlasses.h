@@ -12,6 +12,7 @@
 #include "CPUTCheckbox.h"
 #include "CPUTSprite.h"
 #include "MenuBase.h"
+#include "../entity/Glasses.h"
 
 class Menu_AddNewGlasses : public MenuBase
 {

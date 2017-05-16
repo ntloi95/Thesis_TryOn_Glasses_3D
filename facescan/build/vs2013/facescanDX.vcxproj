@@ -477,6 +477,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\CGlassesModel.h" />
+    <ClInclude Include="..\..\entity\Glasses.h" />
+    <ClInclude Include="..\..\entity\Order.h" />
+    <ClInclude Include="..\..\entity\Transaction.h" />
+    <ClInclude Include="..\..\entity\User.h" />
+    <ClInclude Include="..\..\entity\WhistItem.h" />
     <ClInclude Include="..\..\Facemap\CDisplacementMapStage.h" />
     <ClInclude Include="..\..\Facemap\CHairGeometryStage.h" />
     <ClInclude Include="..\..\Facemap\CHeadBlendStage.h" />
@@ -513,6 +518,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\CGlassesModel.cpp" />
+    <ClCompile Include="..\..\entity\Glasses.cpp" />
+    <ClCompile Include="..\..\entity\Order.cpp" />
+    <ClCompile Include="..\..\entity\Transaction.cpp" />
+    <ClCompile Include="..\..\entity\User.cpp" />
+    <ClCompile Include="..\..\entity\WhistItem.cpp" />
     <ClCompile Include="..\..\Facemap\CDisplacementMapStage.cpp" />
     <ClCompile Include="..\..\Facemap\CHairGeometryStage.cpp" />
     <ClCompile Include="..\..\Facemap\CHeadBlendStage.cpp" />

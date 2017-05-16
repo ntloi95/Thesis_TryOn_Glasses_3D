@@ -12,6 +12,7 @@
 #include "CPUTCheckbox.h"
 #include "CPUTSprite.h"
 #include "MenuBase.h"
+#include "../entity/User.h"
 
 class Menu_NewUserRegister : public MenuBase
 {

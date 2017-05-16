@@ -556,11 +556,9 @@ void Menu_FaceMapping::LoadGlasses(const std::string &filename)
 void Menu_FaceMapping::ActivationChanged(bool active)
 {
 	MenuBase::ActivationChanged(active);
-	CPUTGuiController *pGUI = MenuGlob_GUI();
 	
 	if (active && mIsEditingLandmarks)
 	{
-		pGUI->CreateButton("Back", MainMenuButton_Back, MENU_CPUT_PANEL_ID);
 		gMenu_LandmarkEdit->GetOutput(&mFaceModel.Landmarks);
 		mForceRebuildAll = true;
 		mIsEditingLandmarks = false;
@@ -956,6 +954,10 @@ void Menu_FaceMapping::DrawGUI(CPUTRenderParameters &renderParams)
 		ImGui::SliderInt("Vibrance 2", &mTweaks.PostBlendAdjust[1].y, -100, 100);
 		ImGui::SliderInt("Lightness 2", &mTweaks.PostBlendAdjust[1].z, -100, 100);
 	}
+	if (ImGui::Button("Back"))
+	{
+		MenuController_PopMenu(true);
+	}
 	ImGui::End();
 
 	// Create a dummy window for drawing text in the render area
@@ -969,8 +971,8 @@ void Menu_FaceMapping::DrawGUI(CPUTRenderParameters &renderParams)
 		window_flags_full |= ImGuiWindowFlags_NoInputs;
 
 		ImGuiStyle& style = ImGui::GetStyle();
-		float prevAlpha = style.WindowFillAlphaDefault;
-		style.WindowFillAlphaDefault = 0.0f; // make it transparent
+		//float prevAlpha = style.WindowFillAlphaDefault;
+		//style.WindowFillAlphaDefault = 0.0f; // make it transparent
 		ImGui::SetNextWindowSize(ImVec2((float)renderParams.mWidth - mImGUIMenuWidth, (float)renderParams.mHeight));
 		ImGui::Begin("Fullscreen", &fullOpened, window_flags_full);
 
@@ -985,7 +987,7 @@ void Menu_FaceMapping::DrawGUI(CPUTRenderParameters &renderParams)
 			ImGui::Text("Hold Shift - Move Slowly");
 		}
 		ImGui::End();
-		style.WindowFillAlphaDefault = prevAlpha;
+		//style.WindowFillAlphaDefault = prevAlpha;
 	}
 }
 

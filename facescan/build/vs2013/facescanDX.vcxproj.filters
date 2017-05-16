@@ -75,6 +75,21 @@
     <ClCompile Include="..\..\Menu\Menu_ViewUserList.cpp">
       <Filter>Menu</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\entity\Glasses.cpp">
+      <Filter>Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\entity\Order.cpp">
+      <Filter>Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\entity\Transaction.cpp">
+      <Filter>Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\entity\User.cpp">
+      <Filter>Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\entity\WhistItem.cpp">
+      <Filter>Entity</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\SampleStart.h" />
@@ -163,6 +178,21 @@
     <ClInclude Include="..\..\Menu\Menu_ViewUserList.h">
       <Filter>Menu</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\entity\Glasses.h">
+      <Filter>Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\entity\Order.h">
+      <Filter>Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\entity\Transaction.h">
+      <Filter>Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\entity\User.h">
+      <Filter>Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\entity\WhistItem.h">
+      <Filter>Entity</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Menu">
@@ -173,6 +203,9 @@
     </Filter>
     <Filter Include="Facemap">
       <UniqueIdentifier>{9491749c-07a1-4259-b8fa-9660a65d15b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entity">
+      <UniqueIdentifier>{1b25c34d-3421-4913-a381-c61a9e0fdc3c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -71,8 +71,8 @@ void MySample::Create()
 	//Create Menu Function here, 2 functions: Face, Glasses
 	//MenuController_PushMenu(gMenu_Function);
 	//MenuController_PushMenu(gMenu_NewUserRegister);
-	//MenuController_PushMenu(gMenu_AddNewGlasses);
-	MenuController_PushMenu(gMenu_ViewGlassesList);
+	MenuController_PushMenu(gMenu_AddNewGlasses);
+	//MenuController_PushMenu(gMenu_ViewUserList);
 
 #ifndef DISABLE_RSSDK
 	MenuController_PushMenu(gMenu_Scan);
