@@ -477,6 +477,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\CGlassesModel.h" />
+    <ClInclude Include="..\..\database_model\DataProvider.h" />
+    <ClInclude Include="..\..\database_model\DGlasses.h" />
+    <ClInclude Include="..\..\database_model\DOrder.h" />
+    <ClInclude Include="..\..\database_model\DTransaction.h" />
+    <ClInclude Include="..\..\database_model\DUser.h" />
+    <ClInclude Include="..\..\database_model\DWhistItem.h" />
     <ClInclude Include="..\..\entity\Glasses.h" />
     <ClInclude Include="..\..\entity\Order.h" />
     <ClInclude Include="..\..\entity\Transaction.h" />
@@ -518,6 +524,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\CGlassesModel.cpp" />
+    <ClCompile Include="..\..\database_model\DataProvider.cpp" />
+    <ClCompile Include="..\..\database_model\DGlasses.cpp" />
+    <ClCompile Include="..\..\database_model\DOrder.cpp" />
+    <ClCompile Include="..\..\database_model\DTransaction.cpp" />
+    <ClCompile Include="..\..\database_model\DUser.cpp" />
+    <ClCompile Include="..\..\database_model\DWhistItem.cpp" />
     <ClCompile Include="..\..\entity\Glasses.cpp" />
     <ClCompile Include="..\..\entity\Order.cpp" />
     <ClCompile Include="..\..\entity\Transaction.cpp" />

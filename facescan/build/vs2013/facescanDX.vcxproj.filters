@@ -90,6 +90,24 @@
     <ClCompile Include="..\..\entity\WhistItem.cpp">
       <Filter>Entity</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\database_model\DGlasses.cpp">
+      <Filter>DatabaseModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\database_model\DOrder.cpp">
+      <Filter>DatabaseModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\database_model\DTransaction.cpp">
+      <Filter>DatabaseModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\database_model\DUser.cpp">
+      <Filter>DatabaseModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\database_model\DWhistItem.cpp">
+      <Filter>DatabaseModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\database_model\DataProvider.cpp">
+      <Filter>DatabaseModel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\SampleStart.h" />
@@ -193,6 +211,24 @@
     <ClInclude Include="..\..\entity\WhistItem.h">
       <Filter>Entity</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\database_model\DGlasses.h">
+      <Filter>DatabaseModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\database_model\DOrder.h">
+      <Filter>DatabaseModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\database_model\DTransaction.h">
+      <Filter>DatabaseModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\database_model\DUser.h">
+      <Filter>DatabaseModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\database_model\DWhistItem.h">
+      <Filter>DatabaseModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\database_model\DataProvider.h">
+      <Filter>DatabaseModel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Menu">
@@ -206,6 +242,9 @@
     </Filter>
     <Filter Include="Entity">
       <UniqueIdentifier>{1b25c34d-3421-4913-a381-c61a9e0fdc3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DatabaseModel">
+      <UniqueIdentifier>{2c2bbbe6-2477-41c4-b553-6b0eab7b901a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
