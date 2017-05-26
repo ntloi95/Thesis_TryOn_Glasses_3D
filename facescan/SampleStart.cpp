@@ -69,9 +69,9 @@ void MySample::Create()
 	std::string userDir = GetUserDataDirectory();
 	
 	//Create Menu Function here, 2 functions: Face, Glasses
-	//MenuController_PushMenu(gMenu_Function);
+	MenuController_PushMenu(gMenu_FaceMapping);
 	//MenuController_PushMenu(gMenu_NewUserRegister);
-	MenuController_PushMenu(gMenu_AddNewGlasses);
+	//MenuController_PushMenu(gMenu_AddNewGlasses);
 	//MenuController_PushMenu(gMenu_ViewUserList);
 
 #ifndef DISABLE_RSSDK
