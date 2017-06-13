@@ -40,23 +40,13 @@ void MenuGlob_Init()
 	gMenu_LandmarkEdit = new Menu_LandmarkEdit();
 	gMenu_Function = new Menu_Function();
 	gMenu_GlassesPreview = new Menu_GlassesPreview();
-	gMenu_AddNewGlasses = new Menu_AddNewGlasses();
-	gMenu_NewUserRegister = new Menu_NewUserRegister();
-	gMenu_ViewGlassesList = new Menu_ViewGlassesList();
-	gMenu_ViewUserList = new Menu_ViewUserList();
 
-#ifndef DESIGN_UI
 	gMenu_Scan->Init();
 	gMenu_FaceScanPreview->Init();
 	gMenu_FaceMapping->Init();
 	gMenu_GlassesPreview->Init();
 	gMenu_LandmarkEdit->Init();
-#endif
 	gMenu_Function->Init();
-	gMenu_AddNewGlasses->Init();
-	gMenu_NewUserRegister->Init();
-	gMenu_ViewGlassesList->Init();
-	gMenu_ViewUserList->Init();
 }
 
 void MenuGlob_Shutdown()

@@ -120,7 +120,6 @@ void Menu_Function::DrawGUI(CPUTRenderParameters &renderParams)
 			case VIEW_LIST_GLASSES:
 				MenuController_PushMenu(gMenu_ViewGlassesList);
 				break;
-#ifndef DESIGN_UI
 			case SCAN_EDIT:
 			{
 				std::string debugFace;
@@ -131,7 +130,6 @@ void Menu_Function::DrawGUI(CPUTRenderParameters &renderParams)
 				MenuController_PushMenu(gMenu_FaceMapping);
 			}	
 				break;
-#endif
 #ifndef DISABLE_RSSDK
 			case SCAN_NEW:
 				MenuController_PushMenu(gMenu_Scan);

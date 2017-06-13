@@ -58,6 +58,8 @@ int main(int argc, char **argv)
 	// window and device parameters
 	CPUTWindowCreationParams params;
 	params.startFullscreen = mParsedCommandLine.GetParameter("fullscreen");
+	//params.windowPositionX = -4000;
+	//params.windowPositionY = -4000;
 	mParsedCommandLine.GetParameter("height", &(params.windowHeight));
 	mParsedCommandLine.GetParameter("width", &(params.windowWidth));
 	mParsedCommandLine.GetParameter("xpos", &(params.windowPositionX));

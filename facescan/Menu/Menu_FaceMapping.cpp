@@ -41,6 +41,7 @@
 #include <dxgi1_3.h>
 #include <pxcfacedata.h>
 
+const float ROUNDNESS[2] = { 0.5f, 1.0f };
 const char *sDebugTextureViewNames[] = 
 {
 	"None",
@@ -294,7 +295,11 @@ void Menu_FaceMapping::Init()
 	QuickSet("Base Shape", "Shape 3", 0.0f, "shape_3", 0.0f, 1.0f, 0.0f, 1.0f, mMorphParamDefs);
 	QuickSet("Base Shape", "Width", 0.0f, "shape_width", 0.0f, 1.0f, 0.0f, 1.0f, mMorphParamDefs);
 
-	def.Reset("Base Shape", "Roundness", 0.5f);
+	if (mGender == MALE)
+		def.Reset("Base Shape", "Roundness", 0.5f);
+	else
+		def.Reset("Base Shape", "Roundness", 1.0f);
+
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_round", 0.5f, 1.0f, 0.0f, 1.0f));
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_square", 0.0f, 0.5f, 1.0f, 0.0f));
 	mMorphParamDefs.push_back(def);
@@ -409,8 +414,11 @@ void Menu_FaceMapping::Init()
 	mHairDefNames = (const char **)malloc(sizeof(const char*) * mHairDefs.size());
 	for (int i = 0; i < (int)mHairDefs.size(); i++)
 		mHairDefNames[i] = mHairDefs[i].Name.c_str();
-	
-	SetLoadHairDef(0, true);
+
+	if (mGender == MALE)
+		SetLoadHairDef(0, true);
+	else
+		SetLoadHairDef(6, true);
 
 	// Load skin Type
 	mSkinDefs.clear();
@@ -470,9 +478,9 @@ void Menu_FaceMapping::SetLoadHairDef(int hairIndex, bool force)
 
 void Menu_FaceMapping::SetLoadSkinDef(int skinIndex, bool force)
 {
-	if (mCurrentHairIndex != skinIndex || force)
+	if (mCurrentSkinIndex != skinIndex || force)
 	{
-		mCurrentHairIndex = skinIndex;
+		mCurrentSkinIndex = skinIndex;
 		assert(skinIndex >= 0 && skinIndex < (int)mSkinDefs.size());
 		/*SHairDef *def = &mHairDefs[skinIndex];
 		if (def->Model != NULL)
@@ -1266,7 +1274,7 @@ void Menu_FaceMapping::Render(CPUTRenderParameters &renderParams)
 			
 
 			//mDisplayHead
-			for (int i = 0; i < newPoints.size(); i++)
+			for (int i = 0; i < (int)newPoints.size(); i++)
 				DrawBox(renderParams, newPoints[i], float3(0.25f, 0.25f, 0.25f), CPUTColor4(0, 1.0f, 0.0f, 1.0f));
 
 			std::vector<float3> morphedLandmarks = mPipeline.HeadGeometryStage->MorphedHeadLandmarks;

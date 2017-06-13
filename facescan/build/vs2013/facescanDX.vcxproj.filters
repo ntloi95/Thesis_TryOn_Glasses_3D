@@ -250,7 +250,4 @@
   <ItemGroup>
     <ResourceCompile Include="facescanDX.rc" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="icon1.ico" />
-  </ItemGroup>
 </Project>

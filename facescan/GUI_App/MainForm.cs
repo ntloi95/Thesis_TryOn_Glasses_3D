@@ -38,6 +38,7 @@ namespace GUI_App
             skinManager.RemoveFormToManage(this);
             mDisplayGlassesList = new ArrayList();
             mDisplayUserList = new ArrayList();
+            mDisplayTransaction = new ArrayList();
         }
 
         [DllImport("user32.dll")]
@@ -79,7 +80,7 @@ namespace GUI_App
             {
                 const int GWL_STYLE = -16;
                 const int WS_VISIBLE = 0x10000000;
-                ExeProcess = Process.Start("notepad");
+                ExeProcess = Process.Start("facescanDX_NoRS.exe");
                 ExeProcess.WaitForInputIdle();
                 ExeHandle = ExeProcess.MainWindowHandle;
                 SetParent(ExeHandle, this.Handle);
@@ -262,7 +263,10 @@ namespace GUI_App
                 glasses.Eye = (int)EyeSize.Value;
                 glasses.Id = GlassesIDTextField.Text;
                 glasses.Name = GlassesNameTextField.Name;
-                glasses.Price = float.Parse(PriceTextField.Text);
+                if (PriceTextField.Text.Length == 0)
+                    glasses.Price = 0;
+                else
+                    glasses.Price = float.Parse(PriceTextField.Text);
                 glasses.Producer = ProducerComboBox.Text;
                 glasses.Status = StatusComboBox.Text;
                 glasses.Temple = (int)TempleSize.Value;
@@ -292,6 +296,102 @@ namespace GUI_App
         private void tabPageGlasses_Enter(object sender, EventArgs e)
         {
             lableStatusGlasses.Text = "";
+        }
+
+        private void btnDeleteUser_Click(object sender, EventArgs e)
+        {
+            foreach(DataGridViewRow row in tableDataUser.Rows)
+            {
+                if((bool) row.Cells[0].Value)
+                {
+                    tableDataUser.Rows.Remove(row);
+                    foreach (DataGridViewRow rowj in tableDataUser.Rows)
+                        rowj.Cells[1].Value = rowj.Index + 1;
+                    break;
+                }
+            }
+        }
+
+        private void tableDataUser_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            foreach (DataGridViewRow row in tableDataUser.Rows)
+                row.Cells[0].Value = false;
+        }
+
+        private void btnDeleteGlasses_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in tableDataGlasses.Rows)
+            {
+                if ((bool)row.Cells[0].Value)
+                {
+                    tableDataGlasses.Rows.Remove(row);
+                    foreach (DataGridViewRow rowj in tableDataGlasses.Rows)
+                        rowj.Cells[1].Value = rowj.Index + 1;
+                    break;
+                }
+            }
+        }
+
+        private void tableDataGlasses_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            foreach (DataGridViewRow row in tableDataGlasses.Rows)
+                row.Cells[0].Value = false;
+        }
+
+        private ArrayList mDisplayTransaction;
+        void AddTransactionToTableView(TransactionObject transaction)
+        {
+            int row = tableAllTransaction.Rows.Add();
+            tableAllTransaction.Rows[row].Cells[1].Value = row + 1;
+            tableAllTransaction.Rows[row].Cells[2].Value = transaction.Id;
+            tableAllTransaction.Rows[row].Cells[3].Value = transaction.User_Id;
+        }
+        private void btnSearchTransaction_Click(object sender, EventArgs e)
+        {
+            String CommandUrl = "http://localhost:1310/api/transaction";
+            try
+            {
+                string json = new WebClient().DownloadString(CommandUrl);
+                JArray jarray = JArray.Parse(json);
+
+                mDisplayTransaction.Clear();
+                tableAllTransaction.Rows.Clear();
+
+                foreach (var item in jarray)
+                {
+                    TransactionObject transaction = JsonConvert.DeserializeObject<TransactionObject>(item.ToString());
+                    mDisplayGlassesList.Add(transaction);
+                    AddTransactionToTableView(transaction);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void AddUserInforToTransactionView(UserObject user)
+        {
+            CustomerFullNameTextField.Text = user.Name;
+            CustomerEmailTextField.Text = user.Email;
+            CustomerAddressTextField.Text = user.Address;
+        }
+
+        private void tableAllTransaction_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            /*foreach (DataGridViewRow row in tableAllTransaction.Rows)
+                row.Cells[0].Value = false;
+            String CommandUrl = "http://localhost:1310/api/user?id=" + tableAllTransaction.Rows[e.RowIndex].Cells[3];
+            try
+            {
+                string json = new WebClient().DownloadString(CommandUrl);
+                UserObject user = JsonConvert.DeserializeObject<UserObject>(json);
+                AddUserInforToTransactionView(user);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }*/
         }
     }
 }

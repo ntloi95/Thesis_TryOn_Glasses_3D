@@ -230,7 +230,7 @@ void Menu_GlassesPreview::Render(CPUTRenderParameters &renderParams)
 
 		if (mLandmarkCheckbox->GetCheckboxState() == CPUT_CHECKBOX_CHECKED)
 		{
-			for (int i = 0; i < mGlassesModel.Landmarks.size(); i++)
+			for (int i = 0; i < (int)mGlassesModel.Landmarks.size(); i++)
 				DrawCube(renderParams, mGlassesModel.Landmarks[i], 0.1f, CPUTColor4(0, 1, 0, 1));
 		}
 	}

@@ -66,9 +66,13 @@ void MySample::Create()
 	MenuGlob_SetScreenDim(windowWidth, windowHeight);
 	MenuController_Init();
 	
-	std::string userDir = GetUserDataDirectory();
-	
+
 	//Create Menu Function here, 2 functions: Face, Glasses
+	std::string debugFace;
+	std::string userDir = GetUserDataDirectory();
+	CPUTFileSystem::CombinePath(userDir, "loi.obj", &debugFace);
+	gMenu_FaceMapping->mGender = MALE;
+	gMenu_FaceMapping->LoadFace(debugFace);
 	MenuController_PushMenu(gMenu_FaceMapping);
 	//MenuController_PushMenu(gMenu_NewUserRegister);
 	//MenuController_PushMenu(gMenu_AddNewGlasses);
@@ -225,7 +229,8 @@ void MySample::Render(double deltaSeconds)
     UpdatePerFrameConstantBuffer(renderParams, deltaSeconds);
 
     // Clear back buffer
-	mpContext->ClearRenderTargetView(mpBackBufferRTV, (float*)&ImColor(114, 144, 154));
+	const float clearColor[] = { 0.0993f, 0.0993f, 0.0993f, 1.0f };
+	mpContext->ClearRenderTargetView(mpBackBufferRTV, clearColor);
     mpContext->ClearDepthStencilView( mpDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 0.0f, 0);
 	    if(mpCameraController->GetCamera() == mpShadowCamera)
 		{

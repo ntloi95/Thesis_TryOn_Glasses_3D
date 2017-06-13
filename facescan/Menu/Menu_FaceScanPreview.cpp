@@ -222,7 +222,7 @@ void Menu_FaceScanPreview::Render( CPUTRenderParameters &renderParams )
 		landmarks.push_back(KM1);
 		landmarks.push_back(KM2);
 
-		for (int i = 0; i < landmarks.size(); i++)
+		for (int i = 0; i < (int)landmarks.size(); i++)
 			DrawCube(renderParams, landmarks[i], 0.1f, CPUTColor4(0, 1, 1, 1));
 		//DrawCube(renderParams, KT2, 0.1f, CPUTColor4(0, 1, 1, 1));
 

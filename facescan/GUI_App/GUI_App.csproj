@@ -70,6 +70,7 @@
     <Compile Include="AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ArrayList.cs" />
     <Compile Include="ContactForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -216,6 +217,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="images\search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\accpeted.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\pending.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\deny.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

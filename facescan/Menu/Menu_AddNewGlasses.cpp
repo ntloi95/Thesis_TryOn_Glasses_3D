@@ -7,9 +7,6 @@
 #define BTNHELP 201
 #define BTNCANCEL 202
 #define BTNOK 203
-const char HELPTOOLTIP[] = "Try to fill all of text box\nprogram will generate randomly a distinct id for glasses\You also can set a id for glasses but must handle it's unique";
-const char GLASSESCOLOR[][20] = { "Black", "White", "Gold", "Silver", "Other..." };
-const char PRODUCER[][20] = { "Rayban", "Oakley", "Chanel", "Prada", "Other..." };
 
 Menu_AddNewGlasses::Menu_AddNewGlasses()
 {
@@ -107,8 +104,6 @@ void Menu_AddNewGlasses::DrawGUI(CPUTRenderParameters &renderParams)
 
 	ImGui::PushID(BTNHELP);
 	ImGui::Button("Help", ImVec2(50, 20));
-	if (ImGui::IsItemHovered())
-		ImGui::SetTooltip(HELPTOOLTIP);
 	ImGui::PopID();
 	ImGui::SameLine(ImGui::GetWindowWidth() - 150);
 	ImGui::PushID(BTNCANCEL);
@@ -118,8 +113,6 @@ void Menu_AddNewGlasses::DrawGUI(CPUTRenderParameters &renderParams)
 	ImGui::PushID(BTNOK);
 	if (ImGui::Button("OK", ImVec2(50, 20)))
 	{
-		strcpy(curGlasses->mColor, GLASSESCOLOR[colorIndex]);
-		strcpy(curGlasses->mProducer, PRODUCER[producerIndex]);
 	}
 	ImGui::PopID();
 	ImGui::End();

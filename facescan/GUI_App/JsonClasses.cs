@@ -18,7 +18,7 @@ namespace GUI_App
         public int Eye { get; set; }
         public int Bridge { get; set; }
     }
-    
+
     public class UserObject
     {
         public string Id { get; set; }
@@ -27,6 +27,12 @@ namespace GUI_App
         public string Address { get; set; }
         public bool Gender { get; set; }
         public string Discription { get; set; }
+    }
+    
+    public class TransactionObject
+    {
+        public string Id { get; set; }
+        public string User_Id { get; set; }
     }
 
 }
