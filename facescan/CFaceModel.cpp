@@ -13,7 +13,6 @@
 // assume any responsibility for any errors which may appear in this software nor any
 // responsibility to update it.
 //--------------------------------------------------------------------------------------
-
 #include "CFaceModel.h"
 #include "CPUTModel.h"
 #include "CPUTMesh.h"
@@ -57,7 +56,7 @@ void CFaceModel::LoadObjFilename(const std::string &filename, bool landmarks)
 		float3 vmin = mMesh.Pos[0];
 		float3 vmax = mMesh.Pos[0];
 
-		for (int i = 1; i < vertCount; i++)
+		for (int i = 0; i < vertCount; i++)
 		{
 			vmin = Min(vmin, mMesh.Pos[i]);
 			vmax = Max(vmax, mMesh.Pos[i]);

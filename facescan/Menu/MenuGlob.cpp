@@ -22,12 +22,6 @@ Menu_Scan *gMenu_Scan;
 Menu_FaceScanPreview *gMenu_FaceScanPreview;
 Menu_FaceMapping *gMenu_FaceMapping;
 Menu_LandmarkEdit *gMenu_LandmarkEdit;
-Menu_Function *gMenu_Function;
-Menu_GlassesPreview *gMenu_GlassesPreview;
-Menu_AddNewGlasses *gMenu_AddNewGlasses;
-Menu_NewUserRegister *gMenu_NewUserRegister;
-Menu_ViewGlassesList *gMenu_ViewGlassesList;
-Menu_ViewUserList *gMenu_ViewUserList;
 
 static int gScreenWidth = 0;
 static int gScreenHeight = 0;
@@ -38,15 +32,21 @@ void MenuGlob_Init()
 	gMenu_FaceScanPreview = new Menu_FaceScanPreview();
 	gMenu_FaceMapping = new Menu_FaceMapping();
 	gMenu_LandmarkEdit = new Menu_LandmarkEdit();
-	gMenu_Function = new Menu_Function();
-	gMenu_GlassesPreview = new Menu_GlassesPreview();
 
+	// Load profile before Init();
+	/*std::string profilePath;
+	std::string userDir = GetUserDataDirectory();
+	std::ifstream ifstr(userDir + "\\currentid");
+	std::string userId;
+	ifstr >> userId;
+	userId += ".profile";
+	CPUTFileSystem::CombinePath(userDir, userId, &profilePath);
+	gMenu_FaceMapping->LoadProfile(profilePath);
+*/
 	gMenu_Scan->Init();
 	gMenu_FaceScanPreview->Init();
 	gMenu_FaceMapping->Init();
-	gMenu_GlassesPreview->Init();
 	gMenu_LandmarkEdit->Init();
-	gMenu_Function->Init();
 }
 
 void MenuGlob_Shutdown()

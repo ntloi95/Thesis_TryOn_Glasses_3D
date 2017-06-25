@@ -15,10 +15,10 @@
 //--------------------------------------------------------------------------------------
 #ifndef OBJLOADER_INCLUDED_
 #define OBJLOADER_INCLUDED_
+
 #include <vector>
 #include <string>
 #include <stdint.h>
-
 
 // structure for reading the obj model data
 struct tVertex
@@ -43,5 +43,7 @@ struct tObjModel
     std::vector<tVertex>    m_vertices;
 	std::vector<ObjIndexInt>     m_indices;
 };
+
 void objLoader(const char *filename, tObjModel &model);
+
 #endif

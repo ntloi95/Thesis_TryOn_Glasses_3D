@@ -23,9 +23,9 @@
 #include "CPUTMaterial.h"
 #include "../ObjLoader.h"
 #include "../CFaceModel.h"
-#include "../OBJExporter.h"
 #include <time.h>
 #include "../GameFaceScan.h"
+#include <fstream>
 
 enum MainMenuIds
 {
@@ -73,9 +73,11 @@ void Menu_FaceScanPreview::ActivationChanged(bool active)
 			pGUI->CreateButton("Accept Scan", MainMenuIds_Accept, MENU_CPUT_PANEL_ID);
 			pGUI->CreateButton("Retry Scan", MainMenuIds_Retry, MENU_CPUT_PANEL_ID);
 		}
-		pGUI->CreateButton("Back", MainMenuIds_Back, MENU_CPUT_PANEL_ID);
+		else
+		{
+			pGUI->CreateButton("Back", MainMenuIds_Back, MENU_CPUT_PANEL_ID);
+		}
 		pGUI->CreateCheckbox("Landmarks", MainMenuIds_LandmarkDisplayAll, MENU_CPUT_PANEL_ID, &mLandmarkCheckbox);
-		pGUI->CreateButton("Get Landmarks", MainMenuIds_GetInformationLandmark, MENU_CPUT_PANEL_ID);
 	}
 	else
 	{
@@ -97,63 +99,25 @@ void Menu_FaceScanPreview::HandleCPUTEvent(int eventID, int controlID, CPUTContr
 		} break;
 		case MainMenuIds_Accept:
 		{
-#ifndef DESIGN_UI
-			char buffer[256];
-			time_t rawtime;
-			struct tm * timeinfo;
-			time(&rawtime);
-			timeinfo = localtime(&rawtime);
-			strftime(buffer, sizeof(buffer), "%b_%d_%Y_%H_%M_%S", timeinfo);
-			std::string modelName = std::string("model_") + buffer + ".obj";
-
-			OPENFILENAMEA ofn = { 0 };
-			char ofnFilename[MAX_PATH];
-			strncpy(ofnFilename, modelName.c_str(), MAX_PATH);
-
-			ofn.lStructSize = sizeof(ofn);
-			ofn.lpstrTitle = "Save Scanned Face";
-			ofn.hwndOwner = NULL;
-			ofn.lpstrFilter = "Obj Files (*.obj)\0*.obj\0";
-			ofn.lpstrFile = ofnFilename;
-			ofn.nMaxFile = sizeof(ofnFilename);
-			ofn.Flags = OFN_EXPLORER;
-			ofn.lpstrDefExt = "obj";
-
-			if (TRUE == GetSaveFileNameA(&ofn))
-			{
-				FaceScan_MoveScanData(mModelFilename.c_str(), ofnFilename);
-			}
-
+			std::string ofnFilename = ".\\userdata\\";
+			std::ifstream ifstr(".\\userdata\\email.tmp");
+			std::string email;
+			ifstr >> email;
+			ofnFilename += email;
+			ofnFilename += ".obj";
+			FaceScan_MoveScanData(mModelFilename.c_str(), ofnFilename.c_str());
 			gMenu_FaceMapping->LoadFace(ofnFilename);
 			MenuController_PushMenu(gMenu_FaceMapping, true);
-#endif
 		} break;
 		case MainMenuIds_Back:
 		{
 			MenuController_PopMenu(true);
-		} break;
-		case MainMenuIds_GetInformationLandmark:
-		{
-			PrintLandmark();
 		} break;
 
 		}
 	}
 }
 
-void Menu_FaceScanPreview::PrintLandmark()
-{
-	AllocConsole();
-	freopen("CONIN$", "r", stdin);
-	freopen("CONOUT$", "w", stdout);
-	freopen("CONOUT$", "w", stderr);
-	int i = 0;
-	for (auto it = mFaceModel.Landmarks.begin(); it != mFaceModel.Landmarks.end(); it++, i++)
-	{
-		float3 position = *it;
-		printf("%d : %f %f %f \n", i, position.x, position.y, position.z);
-	}
-}
 
 CPUTEventHandledCode Menu_FaceScanPreview::HandleMouseEvent(int x, int y, int wheel, CPUTMouseState state, CPUTEventID message)
 {
@@ -172,7 +136,7 @@ void Menu_FaceScanPreview::Render( CPUTRenderParameters &renderParams )
 	if (displayModel != NULL)
 	{
 		displayModel->Render(renderParams, 0);
-		/*
+
 		if (mLandmarkCheckbox->GetCheckboxState() == CPUT_CHECKBOX_CHECKED)
 		{
 			for (auto it = mFaceModel.Landmarks.begin(); it != mFaceModel.Landmarks.end(); it++) 
@@ -180,56 +144,8 @@ void Menu_FaceScanPreview::Render( CPUTRenderParameters &renderParams )
 				CPUTColor4 color = CPUTColor4(0.0f, 1.0f, 0.0f, 1.0f);
 				DrawCube(renderParams, *it, 0.1f, color);
 			}
-		}*/
-
-		auto item = displayModel->GetMesh(0);
-		D3D11_MAPPED_SUBRESOURCE verts = item->MapVertices(renderParams, CPUT_MAP_READ);
-		int vertex_count = static_cast<CPUTMeshDX11*>(item)->GetVertexCount();
-		RemapVertex v;
-		std::vector<float3> vertexs;
-		std::vector<float3> landmarks;
-		float3 KT1(0, 0, 0);
-		float3 KT2(0, 0, 0);
-		float3 KM1(0, 0, 0);
-		float3 KM2(0, 0, 0);
-
-		for (int i = 0; i < vertex_count; i++) {
-			if (false == CopyVerticesFromMesh(&v, NULL, NULL, i, -1, -1, verts.pData, item))
-				break;
-
-			float3 ver = v.position;
-			ver.x = -ver.x;
-			vertexs.push_back(ver);
-
-			if (ver.x < 0)
-			{
-				if (KT1.y > ver.y)
-					KT1 = ver;
-				if (KM1.y < ver.y)
-					KM1 = ver;
-			}
-			if (ver.x > 0)
-			{
-				if (KT2.y > ver.y)
-					KT2 = ver;
-				if (KM2.y < ver.y)
-					KM2 = ver;
-			}
 		}
-
-		landmarks.push_back(KT1);
-		landmarks.push_back(KT2);
-		landmarks.push_back(KM1);
-		landmarks.push_back(KM2);
-
-		for (int i = 0; i < (int)landmarks.size(); i++)
-			DrawCube(renderParams, landmarks[i], 0.1f, CPUTColor4(0, 1, 1, 1));
-		//DrawCube(renderParams, KT2, 0.1f, CPUTColor4(0, 1, 1, 1));
-
-
 	}
-
-	
 }
 
 void Menu_FaceScanPreview::LoadFaceObj( std::string filename, bool absoluteFilename, bool forceReload )

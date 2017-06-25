@@ -189,6 +189,8 @@ void CHeadGeometryStage::Execute(SHeadGeometryStageInput *input)
 	CPUTSoftwareMesh *base = input->BaseHeadInfo->BaseHeadMesh;
 	
 	// Find the vertex index that each head landmark belongs to
+	std::vector<float3> MorphedHeadLandmarks;
+	
 	// First, correlate landmark mesh vertices to landmarks
 	// Potentially difficult to force vertex indices from authoring package (e.g., 3dsMax).
 	// Easier to force order of assets in asset set (note, 3dsMax appears to use selection order).
@@ -221,7 +223,7 @@ void CHeadGeometryStage::Execute(SHeadGeometryStageInput *input)
 	UpdateHeadProjectionInfo(input->DisplacementMapInfo, input->BaseHeadInfo, input->Tweaks, &hpi);
 
 	MorphedLandmarkMesh.CopyFrom(&input->BaseHeadInfo->LandmarkMesh);
-
+		
 	// Shift the landmark mesh to match the face landmarks
 	for (int i = 0; i < lmVertCount; i++)
 	{
@@ -230,7 +232,6 @@ void CHeadGeometryStage::Execute(SHeadGeometryStageInput *input)
 		{
 			float2 lmMapPos = input->DisplacementMapInfo->MapLandmarks[idx];
 			float4 pos = float4(lmMapPos.x, lmMapPos.y, MorphedLandmarkMesh.Pos[i].z, 1.0f);
-
 			MorphedLandmarkMesh.Pos[i] = pos * hpi.MapToHeadSpaceTransform;
 		}
 	}
@@ -279,7 +280,7 @@ void CHeadGeometryStage::Execute(SHeadGeometryStageInput *input)
 				float3 barys = mMappedFaceVertices[vIdx].BarycentricCoordinates;
 				float3 newPos = v0*barys.x + v1*barys.y + v2*barys.z;
 				newPos.z += dd;
-				
+
 				//newPos = float4(newPos, 1.0f);// *invWorld;
 				CPUTColor4 samp(0.0f, 0.0f, 0.0f, 0.0f);
 				controlMapColor->SampleRGBAFromUV(dstMesh->Tex[vIdx].x, dstMesh->Tex[vIdx].y, &samp);

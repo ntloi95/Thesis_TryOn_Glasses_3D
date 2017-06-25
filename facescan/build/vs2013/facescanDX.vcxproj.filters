@@ -56,58 +56,10 @@
     <ClCompile Include="..\..\Facemap\CHairGeometryStage.cpp">
       <Filter>Facemap</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Menu\Menu_Function.cpp">
-      <Filter>Menu</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Menu\Menu_GlassesPreview.cpp">
       <Filter>Menu</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\CGlassesModel.cpp" />
-    <ClCompile Include="..\..\Menu\Menu_AddNewGlasses.cpp">
-      <Filter>Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Menu\Menu_NewUserRegister.cpp">
-      <Filter>Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Menu\Menu_ViewGlassesList.cpp">
-      <Filter>Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Menu\Menu_ViewUserList.cpp">
-      <Filter>Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\entity\Glasses.cpp">
-      <Filter>Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\entity\Order.cpp">
-      <Filter>Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\entity\Transaction.cpp">
-      <Filter>Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\entity\User.cpp">
-      <Filter>Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\entity\WhistItem.cpp">
-      <Filter>Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\database_model\DGlasses.cpp">
-      <Filter>DatabaseModel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\database_model\DOrder.cpp">
-      <Filter>DatabaseModel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\database_model\DTransaction.cpp">
-      <Filter>DatabaseModel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\database_model\DUser.cpp">
-      <Filter>DatabaseModel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\database_model\DWhistItem.cpp">
-      <Filter>DatabaseModel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\database_model\DataProvider.cpp">
-      <Filter>DatabaseModel</Filter>
-    </ClCompile>
+    <ClCompile Include="..\..\UserAdjustment.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\SampleStart.h" />
@@ -177,58 +129,10 @@
       <Filter>Facemap</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="..\..\Menu\Menu_Function.h">
-      <Filter>Menu</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Menu\Menu_GlassesPreview.h">
       <Filter>Menu</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\CGlassesModel.h" />
-    <ClInclude Include="..\..\Menu\Menu_AddNewGlasses.h">
-      <Filter>Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Menu\Menu_NewUserRegister.h">
-      <Filter>Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Menu\Menu_ViewGlassesList.h">
-      <Filter>Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Menu\Menu_ViewUserList.h">
-      <Filter>Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\entity\Glasses.h">
-      <Filter>Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\entity\Order.h">
-      <Filter>Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\entity\Transaction.h">
-      <Filter>Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\entity\User.h">
-      <Filter>Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\entity\WhistItem.h">
-      <Filter>Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\database_model\DGlasses.h">
-      <Filter>DatabaseModel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\database_model\DOrder.h">
-      <Filter>DatabaseModel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\database_model\DTransaction.h">
-      <Filter>DatabaseModel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\database_model\DUser.h">
-      <Filter>DatabaseModel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\database_model\DWhistItem.h">
-      <Filter>DatabaseModel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\database_model\DataProvider.h">
-      <Filter>DatabaseModel</Filter>
-    </ClInclude>
+    <ClInclude Include="..\..\UserAdjustment.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Menu">
@@ -240,14 +144,11 @@
     <Filter Include="Facemap">
       <UniqueIdentifier>{9491749c-07a1-4259-b8fa-9660a65d15b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Entity">
-      <UniqueIdentifier>{1b25c34d-3421-4913-a381-c61a9e0fdc3c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DatabaseModel">
-      <UniqueIdentifier>{2c2bbbe6-2477-41c4-b553-6b0eab7b901a}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="facescanDX.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\iconofficial.ico" />
   </ItemGroup>
 </Project>

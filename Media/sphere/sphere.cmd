@@ -1,1 +1,0 @@
-FBXConvert.exe -input:sphere.fbx -outputdir:..\CPUT 

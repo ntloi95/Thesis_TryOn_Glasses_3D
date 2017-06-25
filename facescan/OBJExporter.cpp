@@ -133,6 +133,14 @@ static const ConvertData g_ConvertTable[] = {
     { XBOX_DXGI_FORMAT_R4G4_UNORM,               4, CONVF_UNORM | CONVF_R | CONVF_G },
 };
 
+struct RemapVertex
+{
+	float3 position;
+	float3 normal;
+	float2 uv;
+	float2 bary;
+};
+
 bool CopyVerticesFromMesh(
 	RemapVertex *pV1,
 	RemapVertex *pV2,
@@ -438,7 +446,7 @@ void SaveAlpha( const Image& srcImage, DWORD filter, const Image& destImage, flo
 	}
 }
 
-bool OBJExporter::ExportModel( CPUTModel* cputModel, CPUTRenderParameters const& renderParams, int materialPass ) {
+bool OBJExporter::ExportModel( CPUTModel* cputModel, CPUTRenderParameters const& renderParams, int materialPass, std::string theName ) {
 
 	if(cputModel == nullptr) {
 		return false;
@@ -469,9 +477,9 @@ bool OBJExporter::ExportModel( CPUTModel* cputModel, CPUTRenderParameters const&
 
 		// Extract texture names
 
-		std::array<std::pair<std::string, OBJTextureType>, 3> validTextures = {
+		std::array<std::pair<std::string, OBJTextureType>, 2> validTextures = {
 			std::make_pair("BaseTexture", OBJTextureType::Diffuse)
-			, std::make_pair("NormalTexture", OBJTextureType::Bump)
+			//, std::make_pair("NormalTexture", OBJTextureType::Bump)
 			, std::make_pair("AmbientTexture", OBJTextureType::Ambient)
 		};
 
@@ -488,12 +496,11 @@ bool OBJExporter::ExportModel( CPUTModel* cputModel, CPUTRenderParameters const&
 			if (material->mPixelShaderParameters.mpTexture[j]) {
 				auto iter = std::find_if(std::begin(validTextures), std::end(validTextures), [TexBindName](std::pair<std::string, OBJTextureType> const& element) { return element.first == TexBindName;});
 				if (iter != std::end(validTextures)) {
-					std::string theName = material->mPixelShaderParameters.mpTexture[j]->GetName();
 
 					auto texData = static_cast<CPUTTextureDX11*> (material->mPixelShaderParameters.mpTexture[j]);
 					auto nativeTexture = texData->GetTexture();
 
-					auto aa = CPUTFileSystem::dirname(mFilePath) + "\\" + CPUTFileSystem::basename(theName, true);
+					auto aa = CPUTFileSystem::dirname(mFilePath) + "\\" + CPUTFileSystem::basename(theName, false);
 
 					// Try and save the texture directly
 					HRESULT hr = SaveWICTextureToFile(
@@ -502,7 +509,7 @@ bool OBJExporter::ExportModel( CPUTModel* cputModel, CPUTRenderParameters const&
 						GUID_ContainerFormatPng,
 						string2wstring(aa + ".png").c_str(),
 						&GUID_WICPixelFormat32bppBGR);
-
+					//printf("Directly : %s\n", aa.c_str());
 					ScratchImage CapturedImage;
 					CaptureTexture(CPUT_DX11::GetDevice(), CPUT_DX11::GetContext(), nativeTexture, CapturedImage);
 
@@ -524,30 +531,29 @@ bool OBJExporter::ExportModel( CPUTModel* cputModel, CPUTRenderParameters const&
 
 
 						TexNames.push_back(theName);
-						objMaterials[currentSize + i].AssignTexture(CPUTFileSystem::basename(theName, true) + ".png", iter->second);
+						objMaterials[currentSize + i].AssignTexture(CPUTFileSystem::basename(theName) + ".png", iter->second);
+						//printf("Native : %s\n", theName.c_str());
 
 						// Add a dissolve texture to handle alpha
-						objMaterials[currentSize + i].AssignTexture(CPUTFileSystem::basename(theName, true) + "_alpha.png", OBJTextureType::Dissolve);
+						//objMaterials[currentSize + i].AssignTexture(CPUTFileSystem::basename(theName, true) + "_alpha.png", OBJTextureType::Dissolve);
 
 						std::unique_ptr<ScratchImage> timage(new ScratchImage);
 
 
 						ThrowHResult(_Convert(DecompressedImage->GetImages()[0],    DXGI_FORMAT_R32G32B32_FLOAT, TEX_FILTER_SRGB, 0.5f, *timage));
-						ThrowHResult(SaveToWICFile(*timage->GetImage(0, 0, 0), (DWORD)0, GUID_ContainerFormatPng, string2wstring(aa + "_alpha.png").c_str(), &GUID_WICPixelFormat32bppBGRA));
+						//ThrowHResult(SaveToWICFile(*timage->GetImage(0, 0, 0), (DWORD)0, GUID_ContainerFormatPng, string2wstring(aa + "_alpha.png").c_str(), &GUID_WICPixelFormat32bppBGRA));
 					} else {
 						TexNames.push_back(theName);
-						objMaterials[currentSize + i].AssignTexture(CPUTFileSystem::basename(theName, true) + ".png", iter->second);
-
+						objMaterials[currentSize + i].AssignTexture(CPUTFileSystem::basename(theName) + ".png", iter->second);
+						//printf("Native2 : %s\n", theName.c_str());
 						// Add a dissolve texture to handle alpha
-						objMaterials[currentSize + i].AssignTexture(CPUTFileSystem::basename(theName, true) + "_alpha.png", OBJTextureType::Dissolve);
+						//objMaterials[currentSize + i].AssignTexture(CPUTFileSystem::basename(theName, true) + "_alpha.png", OBJTextureType::Dissolve);
 
 						std::unique_ptr<ScratchImage> timage(new ScratchImage);
 
 						ThrowHResult(_Convert(CapturedImage.GetImages()[0],   DXGI_FORMAT_R32G32B32_FLOAT,  TEX_FILTER_SRGB, 0.5f, *timage));
-						ThrowHResult(SaveToWICFile(*timage->GetImage(0, 0, 0), (DWORD)0, GUID_ContainerFormatPng, string2wstring(aa + "_alpha.png").c_str(), &GUID_WICPixelFormat32bppBGRA));
+						//ThrowHResult(SaveToWICFile(*timage->GetImage(0, 0, 0), (DWORD)0, GUID_ContainerFormatPng, string2wstring(aa + "_alpha.png").c_str(), &GUID_WICPixelFormat32bppBGRA));
 					}
-
-
 				}
 			}
 		}

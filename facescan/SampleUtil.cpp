@@ -62,7 +62,7 @@ void SampleUtil_Init()
 {
 	std::string dir;
 	CPUTFileSystem::GetExecutableDirectory(&dir);
-	CPUTFileSystem::StripDirectoriesFromPath(&dir, 4);
+	CPUTFileSystem::StripDirectoriesFromPath(&dir, 0);
 	CPUTFileSystem::CombinePath(dir, "Media\\MyAssets", &gUtilGlob.myAssetsDirectory);
 	CPUTFileSystem::CombinePath(dir, "userdata", &gUtilGlob.userDataDirectory);
 
@@ -334,6 +334,8 @@ ViewportScoped::~ViewportScoped()
 	}
 	mContext->RSSetViewports(mStoredViewportCount, mStoredViewports);
 }
+
+
 
 void CopyOBJDataToSoftwareMesh(tObjModel *objModel, CPUTSoftwareMesh *softwareMesh)
 {

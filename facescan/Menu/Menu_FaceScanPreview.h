@@ -51,8 +51,6 @@ public:
 	virtual CPUTEventHandledCode HandleMouseEvent(int x, int y, int wheel, CPUTMouseState state, CPUTEventID message);
 	virtual void ActivationChanged(bool active);
 
-	// Add-on
-	void PrintLandmark();
 
 private:
 

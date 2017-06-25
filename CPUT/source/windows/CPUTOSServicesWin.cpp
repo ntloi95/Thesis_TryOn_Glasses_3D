@@ -60,7 +60,6 @@ CPUTResult CPUTFileSystem::GetExecutableDirectory(std::string *pExecutableDir)
 CPUTResult CPUTFileSystem::GetMediaDirectory(std::string *pPath)
 {
 	GetExecutableDirectory(pPath);
-	StripDirectoriesFromPath(pPath, 4);
 	CombinePath(*pPath, "Media", pPath);
 	return CPUT_SUCCESS;
 

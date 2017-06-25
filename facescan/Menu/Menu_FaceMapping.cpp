@@ -13,7 +13,6 @@
 // assume any responsibility for any errors which may appear in this software nor any
 // responsibility to update it.
 //--------------------------------------------------------------------------------------
-#ifndef DESIGN_UI
 #include "Menu_FaceMapping.h"
 #include "MenuController.h"
 #include "CPUTGuiControllerDX11.h"
@@ -41,8 +40,7 @@
 #include <dxgi1_3.h>
 #include <pxcfacedata.h>
 
-const float ROUNDNESS[2] = { 0.5f, 1.0f };
-const char *sDebugTextureViewNames[] = 
+const char *sDebugTextureViewNames[] =
 {
 	"None",
 	"Displacement Color",
@@ -65,7 +63,7 @@ static int cAssert2 = 1 / ((ARRAYSIZE(sDebugHeadDisplayTextureNames) == DebugHea
 const char *sPostBlendColorModes[] =
 {
 	"None",
-	"Colorized",
+	"Colorize",
 	"Adjust",
 };
 static int cAssert3 = 3 / ((ARRAYSIZE(sPostBlendColorModes) == PostBlendColorMode_Count) ? 1 : 0);
@@ -80,20 +78,7 @@ static int cAssert4 = 3 / ((ARRAYSIZE(sCameraModes) == CameraMode_Count) ? 1 : 0
 
 void SetDefaultTweaks(MappingTweaks *tweaks)
 {
-	tweaks->Scale = 1.0f;
-	tweaks->FaceYaw = 0.0f;
-	tweaks->FacePitch = 0.0f;
-	tweaks->FaceRoll = 0.0f;
-	tweaks->OutputTextureResolution = 2048;
-	tweaks->DisplaceOffset = float3(0.0f, 0.0f, -1.88f);
-	tweaks->BlendColor1 = CPUTColorFromBytes(255, 194, 140, 255);
-	tweaks->BlendColor2 = CPUTColorFromBytes(100, 48, 0, 255);
-	tweaks->PostBlendAdjust[0] = tweaks->PostBlendAdjust[1] = int3(0, 0, 0);
-	tweaks->PostBlendColorize[0] = tweaks->PostBlendColorize[1] = int3(180, 50, 0);
-	tweaks->PostBlendMode = PostBlendColorMode_Adjust;
-	tweaks->OtherHeadBlend = 0.0f;
-	tweaks->OtherHeadTexture = NULL;
-	tweaks->OtherHeadMesh = NULL;
+
 }
 
 static CPUTTexture *LoadTexture(std::string &dir, const char *filename)
@@ -128,19 +113,16 @@ void Menu_FaceMapping::SetDefaultDebug()
 	mShowWireframe = false;
 	mFullscreenDebugTextureViewer = true;
 	mUseOrthoCamera = false;
-	mSkipFaceFit = true;
-	mHideCubeMap = true;
+	mSkipFaceFit = false;
+	mHideCubeMap = false;
 	mSkipFaceDisplace = false;
 	mSkipFaceColorBlend = false;
 	mSkipSeamFill = false;
 
-	mDirectionalLightHeight = 0.0f;
-	mDirectionalLightAngle = 0.0f;
-	mDirectionalLightIntensity = 0.7f;
-	mAmbientLightIntensity = 0.3f;
-
-	mHeight = 1.65f;
-	mWeight = 50.0f;
+	mDirectionalLightHeight = 0.0f;//mUserAdjustment.lightHeight;
+	mDirectionalLightAngle = 0.0f;//mUserAdjustment.lightAngle;
+	mDirectionalLightIntensity = 0.15f;//mUserAdjustment.directionLight;
+	mAmbientLightIntensity = 0.7f;//mUserAdjustment.ambientLight;
 }
 
 void Menu_FaceMapping::ResetCameraDefaults()
@@ -163,39 +145,39 @@ void Menu_FaceMapping::ResetCameraDefaults()
 	mCameraControlViewer->SetTarget(float3(0, 0, 0));
 	mCameraControlViewer->SetDistance(80.0f, 0.1f, 400.0f);
 	mCameraControlViewer->SetViewAngles(0, 0);
-	
+
 	mCameraControlOrthographic->SetPosition(float3(0.0f, 0.0f, -50.0f));
 	mCameraControlOrthographic->SetLook(float3(0, 0, 0));
 	mCameraControlOrthographic->SetZoomRange(1.0f, 1.0f, 40.0f, 40.0f);
 	mCameraControlOrthographic->SetVolume(float3(-20.0f, -20.0f, -100.0f), float3(20.0f, 20.0f, -100.0f));
 }
 
-
 void Menu_FaceMapping::Init()
 {
 	MenuBase::Init();
+
 	mCPUTLandmarkModel = NULL;
-	
+
 	mForceRebuildAll = true;
 	mIsEditingLandmarks = false;
 	mOtherHeadTexture = NULL;
-		
+
 	SetDefaultDebug();
-	
+
 	SetDefaultTweaksInternal();
 	mLastTweaks.Scale = 0.0f;
 
 	CPUTAssetLibrary *pAssetLibrary = CPUTAssetLibrary::GetAssetLibrary();
-	
-    {
-        std::string mediaDir;
-        CPUTFileSystem::GetMediaDirectory(&mediaDir);
-        std::string skyDir = mediaDir + "/cubeMap_01/";
-        CPUTAssetLibrary* pAssetLibrary = CPUTAssetLibrary::GetAssetLibrary();
-        pAssetLibrary->SetMediaDirectoryName(skyDir);
-        mpCubemap = pAssetLibrary->GetAssetSet("cubeMap_01");
-        pAssetLibrary->SetMediaDirectoryName(mediaDir + "/");
-    }
+
+	{
+		std::string mediaDir;
+		CPUTFileSystem::GetMediaDirectory(&mediaDir);
+		std::string skyDir = mediaDir + "/cubeMap_01/";
+		CPUTAssetLibrary* pAssetLibrary = CPUTAssetLibrary::GetAssetLibrary();
+		pAssetLibrary->SetMediaDirectoryName(skyDir);
+		mpCubemap = pAssetLibrary->GetAssetSet("cubeMap_01");
+		pAssetLibrary->SetMediaDirectoryName(mediaDir + "/");
+	}
 	pAssetLibrary->SetRootRelativeMediaDirectory("MyAssets");
 	CPUTMaterial* mat = pAssetLibrary->GetMaterial("render_code_sprite");
 	mDebugTextureSprite = CPUTSprite::Create(-1.0f, -1.0f, 0.5f, 0.5f, mat);
@@ -204,11 +186,11 @@ void Menu_FaceMapping::Init()
 	// load the head model
 	std::string mediaFilename;
 	CPUTFileSystem::GetMediaDirectory(&mediaFilename);
-	pAssetLibrary->SetMediaDirectoryName(mediaFilename+"\\");
+	pAssetLibrary->SetMediaDirectoryName(mediaFilename + "\\");
 	CPUTFileSystem::CombinePath(mediaFilename, "headassets.scene", &mediaFilename);
 	mHeadAssetScene = CPUTScene::Create();
 	mHeadAssetScene->LoadScene(mediaFilename);
-	
+
 	CPUTAssetSet *landmarkSet = mHeadAssetScene->GetAssetSet(0);
 	CPUTAssetSet *landmarkMeshSet = mHeadAssetScene->GetAssetSet(1);
 	CPUTAssetSet *headSet = mHeadAssetScene->GetAssetSet(2);
@@ -216,9 +198,9 @@ void Menu_FaceMapping::Init()
 	CPUTAssetSet *hairMediumSet = mHeadAssetScene->GetAssetSet(4);
 	CPUTAssetSet *hairLongSet = mHeadAssetScene->GetAssetSet(5);
 	CPUTAssetSet *hairHelmet1Set = mHeadAssetScene->GetAssetSet(6);
-    CPUTAssetSet *hairHelmet2Set = mHeadAssetScene->GetAssetSet(7);
-    CPUTAssetSet *hairHelmet3Set = mHeadAssetScene->GetAssetSet(8);
-    CPUTAssetSet *hairHelmet4Set = mHeadAssetScene->GetAssetSet(9);
+	CPUTAssetSet *hairHelmet2Set = mHeadAssetScene->GetAssetSet(7);
+	CPUTAssetSet *hairHelmet3Set = mHeadAssetScene->GetAssetSet(8);
+	CPUTAssetSet *hairHelmet4Set = mHeadAssetScene->GetAssetSet(9);
 	CPUTAssetSet *beardSet = mHeadAssetScene->GetAssetSet(10);
 
 	pAssetLibrary->FindAssetSet("LandmarkMesh");
@@ -235,7 +217,7 @@ void Menu_FaceMapping::Init()
 		if (lmIdx >= kLandmarkIndex_FaceOutlineStart && lmIdx <= kLandmarkIndex_FaceOutlineEnd)
 		{
 			// Shift the face outline landmarks so they are don't get used by the algorithm
-			mHeadInfo.BaseHeadLandmarks[lmIdx].x += 100.0f; 
+			mHeadInfo.BaseHeadLandmarks[lmIdx].x += 100.0f;
 		}
 		SAFE_RELEASE(node);
 	}
@@ -246,7 +228,7 @@ void Menu_FaceMapping::Init()
 	mHeadInfo.LandmarkMesh.ApplyTransform(mCPUTLandmarkModel->GetWorldMatrix());
 
 	mDisplayHead = pAssetLibrary->FindModel("templateHeadModel", true);
-	
+
 	mCameraMode = CameraMode_ModelViewer;
 	mCameraControlViewer = new CPUTCameraModelViewer();
 	mCameraControlFPS = CPUTCameraControllerFPS::Create();
@@ -254,14 +236,14 @@ void Menu_FaceMapping::Init()
 	mCameraControllers[CameraMode_Free] = mCameraControlFPS;
 	mCameraControllers[CameraMode_ModelViewer] = mCameraControlViewer;
 	mCameraControllers[CameraMode_Orthographic] = mCameraControlOrthographic;
-	
+
 	ResetCameraDefaults();
 
 	LoadCPUTModelToSWMesh(headSet, "Base_Head.mdl", &mBaseMesh);
 
 	std::string headDir;
 	CPUTFileSystem::GetMediaDirectory(&headDir);
-	CPUTFileSystem::CombinePath(headDir, "HeadTextures", &headDir);	
+	CPUTFileSystem::CombinePath(headDir, "HeadTextures", &headDir);
 
 	mHeadInfo.BaseHeadMesh = &mBaseMesh;
 	mHeadInfo.Textures[eBaseHeadTexture_ControlMap_Displacement] = LoadTexture(headDir, "DisplacementControlMap.png");
@@ -270,7 +252,7 @@ void Menu_FaceMapping::Init()
 	mHeadInfo.Textures[eBaseHeadTexture_ColorTransfer] = LoadTexture(headDir, "ColorTransferMap.png");
 	mHeadInfo.Textures[eBaseHeadTexture_Skin] = LoadTexture(headDir, "SkinMask.png");
 
-	
+
 	SMorphTweakParamDef def;
 
 	auto QuickSet = [=](const char *category, const char *name, float defaultValue, const char *modelName, float range1, float range2, float apply1, float apply2, std::vector<SMorphTweakParamDef> &morphParamDefs)
@@ -283,30 +265,23 @@ void Menu_FaceMapping::Init()
 
 	QuickSet("Front Profile", "Head Width", 0.5f, "shape_width", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
 	QuickSet("Front Profile", "Eye Area Width", 0.5f, "shape_orbit_width", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
-	QuickSet("Front Profile", "Cheekbone Width", 0.0f, "shape_cheekbone_size", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
+	QuickSet("Front Profile", "Cheekbone Width", 0.5f, "shape_cheekbone_size", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
 	QuickSet("Front Profile", "OCC Width", 0.5f, "shape_OCC_width", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
 	QuickSet("Front Profile", "Jaw Width", 0.5f, "shape_jaw_width", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
-	QuickSet("Front Profile", "Jaw Level", 0.58f, "shape_jaw_level", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
-	QuickSet("Front Profile", "Chin Width", 0.67f, "shape_chin_width", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
-	QuickSet("Front Profile", "Neck Width", 0.21f, "shape_neck_girth", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
-		
+	QuickSet("Front Profile", "Jaw Level", 0.5f, "shape_jaw_level", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
+	QuickSet("Front Profile", "Neck Width", 0.5f, "shape_neck_girth", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
+
 	QuickSet("Base Shape", "Shape 1", 0.0f, "shape_1", 0.0f, 1.0f, 0.0f, 1.0f, mMorphParamDefs);
 	QuickSet("Base Shape", "Shape 2", 0.0f, "shape_2", 0.0f, 1.0f, 0.0f, 1.0f, mMorphParamDefs);
 	QuickSet("Base Shape", "Shape 3", 0.0f, "shape_3", 0.0f, 1.0f, 0.0f, 1.0f, mMorphParamDefs);
 	QuickSet("Base Shape", "Width", 0.0f, "shape_width", 0.0f, 1.0f, 0.0f, 1.0f, mMorphParamDefs);
 
-	if (mGender == MALE)
-		def.Reset("Base Shape", "Roundness", 0.5f);
-	else
-		def.Reset("Base Shape", "Roundness", 1.0f);
-
+	def.Reset("Base Shape", "Roundness", 0.5f);
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_round", 0.5f, 1.0f, 0.0f, 1.0f));
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_square", 0.0f, 0.5f, 1.0f, 0.0f));
 	mMorphParamDefs.push_back(def);
-	
-	float BMI = mWeight / (mHeight*mHeight);
-	float sBMI = (BMI - BMI_MIN)/(BMI_MAX - BMI_MIN);
-	def.Reset("Base Shape", "BMI", sBMI);
+
+	def.Reset("Base Shape", "BMI", 0.5f);
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_BMI_Heavy", 0.5f, 1.0f, 0.0f, 1.0f));
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_BMI_Lean", 0.0f, 0.5f, 1.0f, 0.0f));
 	mMorphParamDefs.push_back(def);
@@ -315,16 +290,16 @@ void Menu_FaceMapping::Init()
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_Cheekbone_Size", 0.0f, 1.0f, 0.0f, 1.0f));
 	mMorphParamDefs.push_back(def);
 
-	def.Reset("Jaw", "Chin Protrude", 0.0f);
+	def.Reset("Jaw", "Chin Protrude", 0.5f);
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_chin_back", 0.0f, 0.5f, 1.0f, 0.0f));
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_chin_front", 0.5f, 1.0f, 0.0f, 1.0f));
 	mMorphParamDefs.push_back(def);
-	
+
 	def.Reset("Jaw", "Chin Level", 0.0f);
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_chin_level", 0.0f, 1.0f, 0.0f, 1.0f));
 	mMorphParamDefs.push_back(def);
-	
-	def.Reset("Jaw", "Chin Width", 0.0f);
+
+	def.Reset("Jaw", "Chin Width", 0.5f);
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_chin_narrow", 0.0f, 0.5f, 1.0f, 0.0f));
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_chin_width", 0.5f, 1.0f, 0.0f, 1.0f));
 	mMorphParamDefs.push_back(def);
@@ -332,7 +307,7 @@ void Menu_FaceMapping::Init()
 	def.Reset("Other", "Neck Slope", 0.0f);
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_chin_neck_slope", 0.0f, 1.0f, 0.0f, 1.0f));
 	mMorphParamDefs.push_back(def);
-	
+
 	// Add all the morph targets available.
 	for (int i = 0; i < (int)headSet->GetAssetCount(); i++)
 	{
@@ -350,19 +325,19 @@ void Menu_FaceMapping::Init()
 				{
 					name = name.substr(6);
 				}
-				if (name != std::string("Mouth_Open") || name != std::string("Brow_Height"))
-					QuickSet("All Shapes", name.c_str(), 0.5f, modelName.c_str(), 0.0f, 1.0f, -5.0f, 5.0f, mMorphParamDefs);
-				if (name == std::string("Mouth_Open") || name == std::string("Brow_Height"))
-					QuickSet("All Shapes Post", name.c_str(), 0.5f, modelName.c_str(), 0.0f, 1.0f, -5.0f, 5.0f, mPostMorphParamDefs);
+
+				QuickSet("All Shapes", name.c_str(), 0.5f, modelName.c_str(), 0.0f, 1.0f, -5.0f, 5.0f, mMorphParamDefs);
+				QuickSet("All Shapes Post", name.c_str(), 0.5f, modelName.c_str(), 0.0f, 1.0f, -5.0f, 5.0f, mPostMorphParamDefs);
 			}
 		}
 		SAFE_RELEASE(node);
 	}
 
-	def.Reset("Body Mass Index", "BMI", 0.5f);
+	def.Reset("Shape", "BMI", 0.5f);
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_BMI_Heavy", 0.5f, 1.0f, 0.0f, 1.0f));
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_BMI_Lean", 0.0f, 0.5f, 1.0f, 0.0f));
-	//mPostMorphParamDefs.push_back(def);
+	mPostMorphParamDefs.push_back(def);
+	QuickSet("Shape", "Ogre", 0.0f, "shape_Ogre", 0.0f, 1.0f, 0.0f, 1.0f, mPostMorphParamDefs);
 
 	CPUTSoftwareMesh tempMesh;
 	for (int i = 0; i < 2; i++)
@@ -389,7 +364,7 @@ void Menu_FaceMapping::Init()
 
 	mHairDefs.clear();
 
-	auto AddHair = [=](CPUTAssetSet *set, const char *modelName, const char *displayName )
+	auto AddHair = [=](CPUTAssetSet *set, const char *modelName, const char *displayName)
 	{
 		SHairDef hairDef(NULL, displayName, new CPUTSoftwareMesh());
 		set->GetAssetByName(modelName, (CPUTRenderNode**)&hairDef.Model);
@@ -400,46 +375,21 @@ void Menu_FaceMapping::Init()
 	};
 
 
-	AddHair(hairHelmet1Set, "hair1_retopo.mdl", "Helmet Short");
+	mHairDefs.push_back(SHairDef(NULL, "Hairless", NULL));
 
 	AddHair(hairShortSet, "ShortHair.mdl", "Short");
 	AddHair(hairMediumSet, "HairMedium.mdl", "Medium");
 	AddHair(hairLongSet, "Long_Hair.mdl", "Long");
-	mHairDefs.push_back(SHairDef(NULL, "Hairless", NULL));
-	
-    AddHair(hairHelmet2Set, "hair2.mdl", "Helmet 2");
-    AddHair(hairHelmet3Set, "hair3.mdl", "Helmet 3");
-    AddHair(hairHelmet4Set, "hair4.mdl", "Helmet 4");
+	AddHair(hairHelmet1Set, "hair1_retopo.mdl", "Helmet Short");
+	AddHair(hairHelmet2Set, "hair2.mdl", "Helmet 2");
+	AddHair(hairHelmet3Set, "hair3.mdl", "Helmet 3");
+	AddHair(hairHelmet4Set, "hair4.mdl", "Helmet 4");
 
-	mHairDefNames = (const char **)malloc(sizeof(const char*) * mHairDefs.size());
+	mHairDefNames = (const char **)malloc(sizeof(const char*)* mHairDefs.size());
 	for (int i = 0; i < (int)mHairDefs.size(); i++)
 		mHairDefNames[i] = mHairDefs[i].Name.c_str();
 
-	if (mGender == MALE)
-		SetLoadHairDef(0, true);
-	else
-		SetLoadHairDef(6, true);
-
-	// Load skin Type
-	mSkinDefs.clear();
-
-	auto AddSkin = [=](const char *fileName, const char *displayName)
-	{
-		// Load file skin (color 1, color 2)
-		// Set display name and two colors
-		// Add to vector mSkinDefs
-		mSkinDefs.push_back(std::string(displayName));
-
-	};
-	AddSkin("Black.ski", "Black Skin People");
-	AddSkin("Yellow.ski", "Yellow Skin People");
-	AddSkin("White.ski", "White Skin People");
-
-	mSkinDefNames = (const char **)malloc(sizeof(const char*) * mSkinDefs.size());
-	for (int i = 0; i < (int)mSkinDefs.size(); i++)
-		mSkinDefNames[i] = mSkinDefs[i].c_str();
-
-	SetLoadSkinDef(0, true);
+	SetLoadHairDef(0, true);
 
 	// Load Beard Parts
 	auto AddBeardPart = [=](CPUTAssetSet *set, const char *modelName, const char *displayName)
@@ -452,13 +402,13 @@ void Menu_FaceMapping::Init()
 		mBeardDefs.push_back(hairDef);
 		mBeardEnabled.push_back(false);
 	};
-	
+
 	AddBeardPart(beardSet, "Chops.mdl", "Chops");
 	AddBeardPart(beardSet, "moustache.mdl", "Mustache");
 	AddBeardPart(beardSet, "SideBurns.mdl", "Sideburns");
 	AddBeardPart(beardSet, "SoulPatch.mdl", "Soulpatch");
 	AddBeardPart(beardSet, "goatee.mdl", "Goatee");
-	
+
 }
 
 void Menu_FaceMapping::SetLoadHairDef(int hairIndex, bool force)
@@ -476,24 +426,6 @@ void Menu_FaceMapping::SetLoadHairDef(int hairIndex, bool force)
 	}
 }
 
-void Menu_FaceMapping::SetLoadSkinDef(int skinIndex, bool force)
-{
-	if (mCurrentSkinIndex != skinIndex || force)
-	{
-		mCurrentSkinIndex = skinIndex;
-		assert(skinIndex >= 0 && skinIndex < (int)mSkinDefs.size());
-		/*SHairDef *def = &mHairDefs[skinIndex];
-		if (def->Model != NULL)
-		{
-			mCurrentHair.CopyFrom(def->SWMesh);
-		}*/
-		// Get skin *def = &mSkinDefs[skinIndex];
-		// if(def != NULL)
-		// { set current skin = skinIndex}
-		mForceRebuildAll = true;
-	}
-}
-
 void Menu_FaceMapping::Shutdown()
 {
 	SAFE_DELETE(mCameraControlViewer);
@@ -502,7 +434,7 @@ void Menu_FaceMapping::Shutdown()
 	SAFE_DELETE(mHeadAssetScene);
 	SAFE_FREE(mHairDefNames);
 	SAFE_RELEASE(mCPUTLandmarkModel);
-    SAFE_RELEASE(mpCubemap);
+	SAFE_RELEASE(mpCubemap);
 	SAFE_DELETE(mDebugTextureSprite);
 	for (int i = 0; i < (int)mHairDefs.size(); i++)
 	{
@@ -539,32 +471,15 @@ void Menu_FaceMapping::LoadFace(const std::string &filename)
 	mForceRebuildAll = true;
 }
 
-void Menu_FaceMapping::LoadGlasses(const std::string &filename)
+void Menu_FaceMapping::LoadProfile(const std::string &filename)
 {
-	/*ProfileBlockScoped block("Load OBJ");
-	std::string fullFilename;
-	if (fullFilename == mObjGlassesFilename)
-		return;
-	mObjGlassesFilename = fullFilename;
-	mGlassesModel.LoadObjFilename(fullFilename);
-
-	SAFE_RELEASE(mDisplayGlasses);
-	mDisplayGlasses = mGlassesModel.CreateCPUTModel();
-
-	CPUTAssetLibrary *pAssetLibrary = CPUTAssetLibrary::GetAssetLibrary();
-	pAssetLibrary->SetRootRelativeMediaDirectory("MyAssets2");
-	std::string matName = pAssetLibrary->GetMaterialDirectoryName();
-	CPUTFileSystem::CombinePath(matName, "meshpreview.mtl", &matName);
-
-	CPUTMaterial *material = CPUTMaterial::Create(matName);
-	material->OverridePSTexture(0, mGlassesModel.GetTexture());
-	mDisplayGlasses->SetMaterial(0, &material, 1);*/
+	mUserAdjustment.readProfile(filename);
 }
+
 
 void Menu_FaceMapping::ActivationChanged(bool active)
 {
 	MenuBase::ActivationChanged(active);
-	
 	if (active && mIsEditingLandmarks)
 	{
 		gMenu_LandmarkEdit->GetOutput(&mFaceModel.Landmarks);
@@ -575,7 +490,20 @@ void Menu_FaceMapping::ActivationChanged(bool active)
 
 void Menu_FaceMapping::SetDefaultTweaksInternal()
 {
-	SetDefaultTweaks(&mTweaks);
+	mTweaks.Scale = 1.0f;
+	mTweaks.FaceYaw = 0; //mUserAdjustment.yaw;
+	mTweaks.FacePitch = 0; // mUserAdjustment.pitch;
+	mTweaks.FaceRoll = 0; // mUserAdjustment.roll;
+	mTweaks.OutputTextureResolution = 2048;
+	mTweaks.DisplaceOffset = float3(0.0f, 0.0f, -3.5f);
+	mTweaks.BlendColor1 = CPUTColorFromBytes(228, 194, 171, 255);
+	mTweaks.BlendColor2 = CPUTColorFromBytes(205, 50, 50, 255);
+	mTweaks.PostBlendAdjust[0] = mTweaks.PostBlendAdjust[1] = int3(0, 0, 0);
+	mTweaks.PostBlendColorize[0] = mTweaks.PostBlendColorize[1] = int3(180, 50, 0);
+	mTweaks.PostBlendMode = PostBlendColorMode_None;
+	mTweaks.OtherHeadBlend = 0.0f;
+	mTweaks.OtherHeadTexture = NULL;
+	mTweaks.OtherHeadMesh = NULL;
 }
 
 void Menu_FaceMapping::LoadFaceUI()
@@ -602,17 +530,6 @@ void Menu_FaceMapping::LoadFaceUI()
 
 void Menu_FaceMapping::HandleCPUTEvent(int eventID, int controlID, CPUTControl *control)
 {
-	if (eventID == CPUT_EVENT_DOWN)
-	{
-		switch (controlID)
-		{
-		case MainMenuButton_Back:
-		{
-			MenuController_PopMenu(true);
-		}
-		break;
-		}
-	}
 }
 
 CPUTEventHandledCode Menu_FaceMapping::HandleKeyboardEvent(CPUTKey key, CPUTKeyState state)
@@ -692,12 +609,12 @@ static bool PromptForExportFilename(std::string &outFilename)
 	ofn.Flags = OFN_EXPLORER;
 	ofn.lpstrDefExt = L"obj";
 
-	char mb_obj_string[sizeof(filename) * sizeof(wchar_t)];
-	WideCharToMultiByte(CP_UTF8, 0, filename, -1, mb_obj_string, sizeof(mb_obj_string) - 1, NULL, NULL);
+	char mb_obj_string[sizeof(filename)* sizeof(wchar_t)];
+	WideCharToMultiByte(CP_UTF8, 0, filename, -1, mb_obj_string, sizeof(mb_obj_string)-1, NULL, NULL);
 
 	if (TRUE == GetSaveFileName(&ofn))
 	{
-		WideCharToMultiByte(CP_UTF8, 0, filename, -1, mb_obj_string, sizeof(mb_obj_string) - 1, NULL, NULL);
+		WideCharToMultiByte(CP_UTF8, 0, filename, -1, mb_obj_string, sizeof(mb_obj_string)-1, NULL, NULL);
 		outFilename = mb_obj_string;
 		return true;
 	}
@@ -707,29 +624,39 @@ static bool PromptForExportFilename(std::string &outFilename)
 // Export the OBJ file
 void Menu_FaceMapping::HandleExport()
 {
-	std::string outFilename;
-	if (PromptForExportFilename(outFilename))
+	std::string outFilename = ".\\userdata\\export\\";
+	std::ifstream ifstr(".\\userdata\\currentid");
+	std::string currentId;
+	ifstr >> currentId;
+	outFilename += currentId;
 	{
-		OBJExporter meshExport(outFilename);
+		OBJExporter meshExport(outFilename + ".obj");
 
 		CPUTRenderParameters params = {};
-		meshExport.ExportModel(mDisplayHead, params, 0);
+		std::string headTextureName = currentId + "_face";
+		//AllocConsole();
+		//freopen("CONOUT$", "w", stdout);
+		//printf("%s\n", headTextureName.c_str());
+		meshExport.ExportModel(mDisplayHead, params, 0, headTextureName);
 		SHairDef *hairDef = (mCurrentHairIndex >= 0 && mCurrentHairIndex < (int)mHairDefs.size()) ? &mHairDefs[mCurrentHairIndex] : NULL;
 		if (hairDef != NULL)
 		{
-			meshExport.ExportModel(hairDef->Model, params, 0);
+			std::string hairTextureName = currentId + "_hair";
+			meshExport.ExportModel(hairDef->Model, params, 0, hairTextureName);
 		}
-		for (int i = 0; i < (int)mBeardEnabled.size(); i++)
+
+		/*for (int i = 0; i < (int)mBeardEnabled.size(); i++)
 		{
-			if (mBeardEnabled[i])
-			{
-				meshExport.ExportModel(mBeardDefs[0].Model, params, 0);
-				break;
-			}
+		if (mBeardEnabled[i])
+		{
+		meshExport.ExportModel(mBeardDefs[0].Model, params, 0);
+		break;
 		}
+		}*/
 
 		meshExport.Close();
 	}
+	ImGui::Text("OK. You can next now!");
 }
 
 void Menu_FaceMapping::UpdateLayout(CPUTRenderParameters &renderParams)
@@ -750,6 +677,7 @@ void Menu_FaceMapping::ResetActiveMorphTargets(bool post)
 	}
 }
 
+
 void Menu_FaceMapping::DrawGUI(CPUTRenderParameters &renderParams)
 {
 	ImGuiWindowFlags window_flags = 0;
@@ -766,62 +694,121 @@ void Menu_FaceMapping::DrawGUI(CPUTRenderParameters &renderParams)
 	ImGui::Begin("Head Shape", &opened, window_flags);
 
 	ImGui::Spacing();
-	
+
 	float guiSpacing = 5.0f;
-	if (ImGui::CollapsingHeader("General", NULL, true, false))
-	{
-		if (ImGui::Button("Export", ImVec2(0, 0))) 
-			HandleExport();
-		ImGui::SameLine(0, guiSpacing);
-		if (ImGui::Button("Reset Defaults", ImVec2(0, 0)))
-		{
-			SetDefaultTweaksInternal();
-		}
-	}
-	if (ImGui::CollapsingHeader("Debug", NULL, true, false))
-	{
-		ImGui::Combo("Texture View", (int*)&mDebugTextureView, sDebugTextureViewNames, DebugTextureView_Count);
-		if (mDebugTextureView != DebugTextureView_None)
-		{
-			ImGui::Indent();
-			ImGui::Checkbox("Display Fullscreen", &mFullscreenDebugTextureViewer);
-			if (mDebugTextureView == DebugTextureView_DisplacementColor || mDebugTextureView == DebugTextureView_DisplacementDepth)
-				ImGui::Checkbox("Show Map Landmarks", &mShowMapLandmarks);
-			ImGui::Unindent();
-			
-		}
-		ImGui::Combo("Head Display Texture", (int*)&mDebugHeadDisplayTextureView, sDebugHeadDisplayTextureNames, DebugHeadDisplayTexture_Count);
-		ImGui::Checkbox("Hide Skybox", &mHideCubeMap);
-		ImGui::Checkbox("Wireframe", &mShowWireframe);
-		ImGui::Checkbox("Show Landmark Mesh", &mRenderLandmarkMesh);
-		ImGui::Checkbox("Show Morphed Landmark Mesh", &mRenderMorphedLandmarkMesh);
-		ImGui::Checkbox("Show Head Landmarks", &mRenderHeadLandmarks);
-		ImGui::Checkbox("Skip Fit Face", &mSkipFaceFit);
-		ImGui::Checkbox("Skip Face Displace", &mSkipFaceDisplace);
-		ImGui::Checkbox("Skip Face Color", &mSkipFaceColorBlend);
-		ImGui::Checkbox("Skip Seam Fill", &mSkipSeamFill);
 
-		if (ImGui::TreeNode("Lighting Options"))
+	if (ImGui::Button("Save and Finish", ImVec2(0, 0)))
+	{
+		HandleExport();
+		//std::ifstream ifstr("..\\..\\..\\..\\userdata\\email.tmp");
+		//std::string email;
+		//ifstr >> email;
+		//email = "..\\..\\..\\..\\export\\" + email +".png";
+		////Change file name and edit file mtl
+		//rename("..\\..\\..\\..\\export\\facediffuse.png", email.c_str());
+
+		//Exit Process
+		exit(EXIT_SUCCESS);
+	}
+	ImGui::SameLine(0, guiSpacing);
+	if (ImGui::Button("Reset all to previous state", ImVec2(0, 0)))
+		SetDefaultTweaksInternal();
+
+	ImGui::Spacing();
+	ImGui::Spacing();
+	if (ImGui::CollapsingHeader("Edit Face's Position", NULL, true, true))
+	{
+		ImGui::SliderAngle("Yaw", &mTweaks.FaceYaw, -20.0f, 20.0f);
+		ImGui::SliderAngle("Pitch", &mTweaks.FacePitch, -20.0f, 20.0f);
+		ImGui::SliderAngle("Roll", &mTweaks.FaceRoll, -20.0f, 20.0f);
+		ImGui::SliderFloat("Z Displace", &mTweaks.DisplaceOffset.z, -10.0f, 0.0f);
+	}
+
+	if (ImGui::CollapsingHeader("Head Shaping", NULL, true, true))
+	{
+		if (ImGui::Button("Reset Shaping"))
+			ResetActiveMorphTargets(false);
+		bool inNode = false;
+		bool nodeOpened = false;
+		std::string *curCategory = NULL;
+		for (int i = 0; i < (int)mMorphParamDefs.size(); i++)
 		{
-			ImGui::SliderFloat("Light Height", &mDirectionalLightHeight, -10.0f, 10.0f);
-			ImGui::SliderAngle("Light Angle", &mDirectionalLightAngle, 0.0f);
-			ImGui::SliderFloat("Direction Light", &mDirectionalLightIntensity, 0.0f, 1.0f);
-			ImGui::SliderFloat("Ambient Light", &mAmbientLightIntensity, 0.0f, 1.0f);
+			SMorphTweakParamDef *def = &mMorphParamDefs[i];
+			if (strcmp(def->Category.c_str(), "Other") == 0){
+				i++;  continue;
+			}
+
+			if (curCategory == NULL || *curCategory != def->Category)
+			{
+				if (nodeOpened)
+				{
+					ImGui::TreePop();
+				}
+
+				if (strcmp(def->Category.c_str(), "All Shapes") == 0)
+				{
+					nodeOpened = ImGui::TreeNode("Other");
+				}
+				else nodeOpened = ImGui::TreeNode(def->Category.c_str());
+				inNode = true;
+				curCategory = &def->Category;
+			}
+			if (nodeOpened)
+			{
+				if (strcmp((*curCategory).c_str(), "All Shapes") == 0)
+				{
+					char c = mMorphParamDefs[i].Name.c_str()[0];
+					if (c == 'E' || c == 'F')
+						ImGui::SliderFloat(mMorphParamDefs[i].Name.c_str(), &mActiveMorphParamWeights[i], 0.0f, 1.0f);
+				}
+				else if (strcmp((*curCategory).c_str(), "Front Profile") == 0 && strcmp(mMorphParamDefs[i].Name.c_str(), "Chin Width") == 0)
+				{
+				}
+				else if (strcmp(mMorphParamDefs[i].Name.c_str(), "Shape 1") == 0)
+					ImGui::SliderFloat("Oval 1", &mActiveMorphParamWeights[i], 0.0f, 1.0f);
+				else if (strcmp(mMorphParamDefs[i].Name.c_str(), "Shape 2") == 0)
+					ImGui::SliderFloat("Oval 2", &mActiveMorphParamWeights[i], 0.0f, 1.0f);
+				else if (strcmp(mMorphParamDefs[i].Name.c_str(), "Shape 3") == 0)
+					ImGui::SliderFloat("Female Shape", &mActiveMorphParamWeights[i], 0.0f, 1.0f);
+				else if (strcmp(mMorphParamDefs[i].Name.c_str(), "Width") == 0)
+					ImGui::SliderFloat("Overall Width", &mActiveMorphParamWeights[i], 0.0f, 1.0f);
+				else
+					ImGui::SliderFloat(mMorphParamDefs[i].Name.c_str(), &mActiveMorphParamWeights[i], 0.0f, 1.0f);
+
+			}
+
+		}
+		if (nodeOpened)
 			ImGui::TreePop();
-		}
-
-		ImGui::Combo("Camera Style", (int*)&mCameraMode, sCameraModes, CameraMode_Count);
-		if (ImGui::Button("Reset Camera"))
-		{
-			ResetCameraDefaults();
-		}
 	}
-	if (ImGui::CollapsingHeader("Hair", NULL, true, false))
+
+	//if (ImGui::CollapsingHeader("Blending", NULL, true, true))
+	//{
+	//	/*bool colorButtonClicked = false;
+	//	ImGui::ColorEdit3("Color1", &mTweaks.BlendColor1.r, &colorButtonClicked);
+	//	if (colorButtonClicked)
+	//	{
+	//		PickColor(mTweaks.BlendColor1, &mTweaks.BlendColor1);
+	//	}
+	//	ImGui::ColorEdit3("Color2", &mTweaks.BlendColor2.r, &colorButtonClicked);
+	//	if (colorButtonClicked)
+	//	{
+	//		PickColor(mTweaks.BlendColor2, &mTweaks.BlendColor2);
+	//	}*/
+
+	//	int index = 0;
+	//	ImGui::Combo("Skin Type", &index, mSkinDefNames, (int)mSkinDefs.size());
+
+	//	ImGui::SliderFloat("Color 1", &mTweaks.LightColor1, 0.0f, 1.0f);
+	//	ImGui::SliderFloat("Color 2", &mTweaks.LightColor2, 0.0f, 1.0f);
+	//}
+
+	if (ImGui::CollapsingHeader("Hair and beard", NULL, true, true))
 	{
 		int index = mCurrentHairIndex;
 		ImGui::Combo("Hair Style", &index, mHairDefNames, (int)mHairDefs.size());
 		SetLoadHairDef(index);
-		if (ImGui::TreeNode("Facial Hair"))
+		if (ImGui::TreeNode("Beard"))
 		{
 			for (int i = 0; i < (int)mBeardDefs.size(); i++)
 			{
@@ -832,171 +819,95 @@ void Menu_FaceMapping::DrawGUI(CPUTRenderParameters &renderParams)
 			}
 			ImGui::TreePop();
 		}
-
-	}
-	if (ImGui::CollapsingHeader("Face Scan", NULL, true, false))
-	{
-		if (ImGui::Button("Load Scan", ImVec2(0, 0)))
-			LoadFaceUI();
-
-		ImGui::SameLine(0, guiSpacing);
-
-		if (IsFaceLoaded() && ImGui::Button("View Scan"))
-		{
-			gMenu_FaceScanPreview->LoadFaceObj(mObjFilename, true);
-			gMenu_FaceScanPreview->SetFaceScanMode(FaceScanPReviewMode_ViewScan);
-			MenuController_PushMenu(gMenu_FaceScanPreview);
-		}
-		ImGui::SameLine(0, guiSpacing);
-		if (ImGui::Button("New Scan", ImVec2(0, 0)))
-			MenuController_PopTo(gMenu_Scan, true);
-
-		ImGui::SliderAngle("Yaw", &mTweaks.FaceYaw, -20.0f, 20.0f);
-		ImGui::SliderAngle("Pitch", &mTweaks.FacePitch, -20.0f, 20.0f);
-		ImGui::SliderAngle("Roll", &mTweaks.FaceRoll, -20.0f, 20.0f);
-		ImGui::SliderFloat("Z Displace", &mTweaks.DisplaceOffset.z, -10.0f, 0.0f);
-		if (IsFaceLoaded() && ImGui::Button("Edit Landmarks"))
-		{
-			std::vector<bool> enabledLandmarks;
-			enabledLandmarks.resize(mHeadInfo.BaseHeadLandmarks.size());
-			memset(&enabledLandmarks[0], 0, sizeof(bool) *mHeadInfo.BaseHeadLandmarks.size());
-			for (auto itr = mPipeline.HeadGeometryStage->LandmarkMeshVertexToLandmarkIndex.begin(); itr != mPipeline.HeadGeometryStage->LandmarkMeshVertexToLandmarkIndex.end(); itr++)
-				if (*itr != -1)
-				{
-					assert(*itr < (int)enabledLandmarks.size());
-					enabledLandmarks[*itr] = true;
-				}
-			gMenu_LandmarkEdit->SetInput(&mFaceModel.Landmarks, &mHeadInfo.BaseHeadLandmarks, NULL, &mFaceModel, &enabledLandmarks);
-			MenuController_PushMenu(gMenu_LandmarkEdit);
-			mIsEditingLandmarks = true;
-		}
-	}
-	if (ImGui::CollapsingHeader("Head Shaping", NULL, true, false))
-	{
-		if (ImGui::Button("Reset Shaping"))
-			ResetActiveMorphTargets(false);
-		bool inNode = false;
-		bool nodeOpened = false;
-		std::string *curCategory = NULL;
-		for (int i = 0; i < (int)mMorphParamDefs.size(); i++)
-		{
-			SMorphTweakParamDef *def = &mMorphParamDefs[i];
-			if (curCategory == NULL || *curCategory != def->Category)
-			{
-				if (nodeOpened)
-				{
-					ImGui::TreePop();
-				}
-				nodeOpened = ImGui::TreeNode(def->Category.c_str());
-				inNode = true;
-				curCategory = &def->Category;
-			}
-			if (nodeOpened)
-				ImGui::SliderFloat(mMorphParamDefs[i].Name.c_str(), &mActiveMorphParamWeights[i], 0.0f, 1.0f);
-		}
-		if (nodeOpened)
-			ImGui::TreePop();
 	}
 
-	if (ImGui::CollapsingHeader("Blending", NULL, true, false))
+	if (ImGui::CollapsingHeader("Head activity", NULL, true))
 	{
-		/*bool colorButtonClicked = false;
-		ImGui::ColorEdit3("Color1", &mTweaks.BlendColor1.r, &colorButtonClicked);
-		if (colorButtonClicked)
-		{
-			PickColor(mTweaks.BlendColor1, &mTweaks.BlendColor1);
-		}
-		ImGui::ColorEdit3("Color2", &mTweaks.BlendColor2.r, &colorButtonClicked);
-		if (colorButtonClicked)
-		{
-			PickColor(mTweaks.BlendColor2, &mTweaks.BlendColor2);
-		}*/
-		int index = 0;
-		ImGui::Combo("Skin Type", &index, mSkinDefNames, (int)mSkinDefs.size());
-
-		ImGui::SliderFloat("Color 1", &mTweaks.LightColor1, 0.0f, 1.0f);
-		ImGui::SliderFloat("Color 2", &mTweaks.LightColor2, 0.0f, 1.0f);
-	}
-	
-	if (ImGui::CollapsingHeader("Post Head Shaping", NULL, true, false))
-	{
-		if (ImGui::Button("Reset Post Shaping"))
+		if (ImGui::Button("Reset activity"))
 			ResetActiveMorphTargets(true);
-		bool inNode = false;
-		bool nodeOpened = false;
+
 		std::string *curCategory = NULL;
 		for (int i = 0; i < (int)mPostMorphParamDefs.size(); i++)
 		{
 			SMorphTweakParamDef *def = &mPostMorphParamDefs[i];
-			if (curCategory == NULL || *curCategory != def->Category)
-			{
-				if (nodeOpened)
-				{
-					ImGui::TreePop();
-				}
-				nodeOpened = ImGui::TreeNode(def->Category.c_str());
-				inNode = true;
-				curCategory = &def->Category;
-			}
-			if (nodeOpened)
-			{
+			if (strcmp(def->Name.c_str(), "Mouth_Open") == 0 || strcmp(def->Name.c_str(), "Brow_Height") == 0)
 				ImGui::SliderFloat(mPostMorphParamDefs[i].Name.c_str(), &mActivePostMorphParamWeights[i], 0.0f, 1.0f);
-			}
-				
 		}
-		if (nodeOpened)
-			ImGui::TreePop();
 	}
-	if(ImGui::CollapsingHeader("Adjust Blending", NULL, true, false))
+	if (ImGui::CollapsingHeader("Skin Color", NULL, true))
 	{
-		if (ImGui::Button("Reset Adjust"))
+		mTweaks.PostBlendMode = PostBlendColorMode_Adjust;
+		//ImGui::Combo("Post Blend Mode", (int*)&, sPostBlendColorModes, PostBlendColorMode_Count);
+		if (mTweaks.PostBlendMode == PostBlendColorMode_Adjust)
 		{
-			for (int i = 0; i < 2; i++)
-			{
-				mTweaks.PostBlendAdjust[i].x = mTweaks.PostBlendAdjust[i].y = mTweaks.PostBlendAdjust[i].z = 0;
-			}
-		}
-		ImGui::SliderInt("Vibrance 1", &mTweaks.PostBlendAdjust[0].y, -100, 100);
-		ImGui::SliderInt("Lightness 1", &mTweaks.PostBlendAdjust[0].z, -100, 100);
+			//ImGui::SliderInt("Hue 1", &mTweaks.PostBlendAdjust[0].x, -180, 180);
+			ImGui::SliderInt("Saturation 1", &mTweaks.PostBlendAdjust[0].y, -100, 100);
+			ImGui::SliderInt("Lightness 1", &mTweaks.PostBlendAdjust[0].z, -100, 100);
 
-		ImGui::SliderInt("Vibrance 2", &mTweaks.PostBlendAdjust[1].y, -100, 100);
-		ImGui::SliderInt("Lightness 2", &mTweaks.PostBlendAdjust[1].z, -100, 100);
+			//ImGui::SliderInt("Hue 2", &mTweaks.PostBlendAdjust[1].x, -180, 180);
+			ImGui::SliderInt("Saturation 2", &mTweaks.PostBlendAdjust[1].y, -100, 100);
+			ImGui::SliderInt("Lightness 2", &mTweaks.PostBlendAdjust[1].z, -100, 100);
+		}
 	}
-	if (ImGui::Button("Back"))
+	/*if (ImGui::CollapsingHeader("Head Blending", NULL, true, true))
 	{
-		MenuController_PopMenu(true);
+	ImGui::TextColored( ImVec4(1.0f, 0.0f, 1.0f,1.0f), "Create a head, store it, and then blend it with another head");
+	if (mDisplayHead)
+	{
+	if (ImGui::Button("Store Current Head"))
+	{
+	mOtherHead.CopyFromDX11Mesh((CPUTMeshDX11*)mDisplayHead->GetMesh(0));
+	SAFE_RELEASE(mOtherHeadTexture);
+	mOtherHeadTexture = mPipeline.HeadBlendStage->Output.OutputDiffuse;
+	mPipeline.HeadBlendStage->Output.OutputDiffuse = NULL;
 	}
+	if (mOtherHeadTexture != NULL)
+	ImGui::SliderFloat("Stored Head Weight", &mTweaks.OtherHeadBlend, 0.0f, 1.0f);
+	else
+	mTweaks.OtherHeadBlend = 0.0f;
+	}
+	}*/
+
+	if (ImGui::CollapsingHeader("Lighting Options", NULL, true))
+	{
+		ImGui::SliderFloat("Light Height", &mDirectionalLightHeight, -10.0f, 10.0f);
+		ImGui::SliderAngle("Light Angle", &mDirectionalLightAngle, 0.0f);
+		ImGui::SliderFloat("Direction Light", &mDirectionalLightIntensity, 0.0f, 1.0f);
+		ImGui::SliderFloat("Ambient Light", &mAmbientLightIntensity, 0.0f, 1.0f);
+
+	}
+
 	ImGui::End();
 
 	// Create a dummy window for drawing text in the render area
-	{
-		bool fullOpened = true;
-		ImGuiWindowFlags window_flags_full = 0;
-		window_flags_full |= ImGuiWindowFlags_NoTitleBar;
-		window_flags_full |= ImGuiWindowFlags_NoResize;
-		window_flags_full |= ImGuiWindowFlags_NoMove;
-		window_flags_full |= ImGuiWindowFlags_NoCollapse;
-		window_flags_full |= ImGuiWindowFlags_NoInputs;
+	//{
+	//	bool fullOpened = true;
+	//	ImGuiWindowFlags window_flags_full = 0;
+	//	window_flags_full |= ImGuiWindowFlags_NoTitleBar;
+	//	window_flags_full |= ImGuiWindowFlags_NoResize;
+	//	window_flags_full |= ImGuiWindowFlags_NoMove;
+	//	window_flags_full |= ImGuiWindowFlags_NoCollapse;
+	//	window_flags_full |= ImGuiWindowFlags_NoInputs;
 
-		ImGuiStyle& style = ImGui::GetStyle();
-		//float prevAlpha = style.WindowFillAlphaDefault;
-		//style.WindowFillAlphaDefault = 0.0f; // make it transparent
-		ImGui::SetNextWindowSize(ImVec2((float)renderParams.mWidth - mImGUIMenuWidth, (float)renderParams.mHeight));
-		ImGui::Begin("Fullscreen", &fullOpened, window_flags_full);
+	//	ImGuiStyle& style = ImGui::GetStyle();
+	//	float prevAlpha = style.WindowFillAlphaDefault;
+	//	style.WindowFillAlphaDefault = 0.0f; // make it transparent
+	//	ImGui::SetNextWindowSize(ImVec2((float)renderParams.mWidth - mImGUIMenuWidth, (float)renderParams.mHeight));
+	//	ImGui::Begin("Fullscreen", &fullOpened, window_flags_full);
 
-		ImGui::SetWindowPos(ImVec2(0, 0));
+	//	ImGui::SetWindowPos(ImVec2(0, 0));
 
-		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Camera: %s (F1 to change)", sCameraModes[mCameraMode]);
-		if (mCameraMode == CameraMode_Free)
-		{
-			ImGui::Text("Hold left mouse button and move mouse to look");
-			ImGui::Text("W/A/S/D - Move Forward/Left/Back/Right");
-			ImGui::Text("Q/E - Move Up/Down");
-			ImGui::Text("Hold Shift - Move Slowly");
-		}
-		ImGui::End();
-		//style.WindowFillAlphaDefault = prevAlpha;
-	}
+	//	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Camera: %s (F1 to change)", sCameraModes[mCameraMode]);
+	//	if (mCameraMode == CameraMode_Free)
+	//	{
+	//		ImGui::Text("Hold left mouse button and move mouse to look");
+	//		ImGui::Text("W/A/S/D - Move Forward/Left/Back/Right");
+	//		ImGui::Text("Q/E - Move Up/Down");
+	//		ImGui::Text("Hold Shift - Move Slowly");
+	//	}
+	//	ImGui::End();
+	//	style.WindowFillAlphaDefault = prevAlpha;
+	//}
 }
 
 void Menu_FaceMapping::CreateMorphTargetEntries(std::vector<MorphTargetEntry> &list, std::vector<SMorphTweakParamDef> &defs, std::vector<float> &weights, bool post)
@@ -1022,7 +933,6 @@ void Menu_FaceMapping::CreateMorphTargetEntries(std::vector<MorphTargetEntry> &l
 
 bool Menu_FaceMapping::IsFaceLoaded()
 {
-	//return false;
 	return mFaceModel.GetMesh()->GetVertCount() > 0;
 }
 
@@ -1030,7 +940,7 @@ void Menu_FaceMapping::Render(CPUTRenderParameters &renderParams)
 {
 	UpdateLayout(renderParams);
 
-	if(renderParams.mpShadowCamera != NULL)
+	if (renderParams.mpShadowCamera != NULL)
 	{
 		float4 camPos = float4(0.0f, mDirectionalLightHeight, -10.0f, 1.0f);
 		camPos = camPos * float4x4RotationY(mDirectionalLightAngle);
@@ -1038,22 +948,16 @@ void Menu_FaceMapping::Render(CPUTRenderParameters &renderParams)
 		renderParams.mpShadowCamera->LookAt(float3(0.0, 0.0f, 0.0f));
 	}
 
-	//if (mDisplayGlasses!=NULL)
-	//{
-	//	//renderParams.mpCamera = (CPUTCamera*)mCameraControllers[mCameraMode]->GetCamera();
-	//	//mDisplayHead->Render(renderParams, 0);
-	//}
-
 	if (IsFaceLoaded())
 	{
-        CPUTCamera *pLastCamera = renderParams.mpCamera;
-		
+		CPUTCamera *pLastCamera = renderParams.mpCamera;
+
 		SPipelineInput input;
 		input.FaceModel = &mFaceModel;
 		input.RenderParams = &renderParams;
 		input.BaseHeadInfo = &mHeadInfo;
 		input.Tweaks = &mTweaks;
-		
+
 		mTweaks.Flags = 0;
 		mTweaks.Flags = mTweaks.Flags | (mSkipFaceFit ? PIPELINE_FLAG_SkipFitFace : 0);
 		mTweaks.Flags = mTweaks.Flags | (mSkipFaceDisplace ? PIPELINE_FLAG_SkipDisplacmentMap : 0);
@@ -1119,17 +1023,17 @@ void Menu_FaceMapping::Render(CPUTRenderParameters &renderParams)
 		CPUTTexture *headTextureOverride = mPipelineOutput.DiffuseTexture;
 		switch (mDebugHeadDisplayTextureView)
 		{
-			case DebugHeadDisplayTexture_DisplacmentControlMap: { headTextureOverride = mHeadInfo.Textures[eBaseHeadTexture_ControlMap_Displacement]; } break;
-			case DebugHeadDisplayTexture_ColorControlMap: { headTextureOverride = mHeadInfo.Textures[eBaseHeadTexture_ControlMap_Color]; } break;
-			case DebugHeadDisplayTexture_FeatureMap: { headTextureOverride = mHeadInfo.Textures[eBaseHeadTexture_FeatureMap]; } break;
-			case DebugHeadDisplayTexture_ColorTransferMap: { headTextureOverride = mHeadInfo.Textures[eBaseHeadTexture_ColorTransfer]; } break;
-			case DebugHeadDisplayTexture_SkinMap: { headTextureOverride = mHeadInfo.Textures[eBaseHeadTexture_Skin]; } break;
-			default: break;
+		case DebugHeadDisplayTexture_DisplacmentControlMap: { headTextureOverride = mHeadInfo.Textures[eBaseHeadTexture_ControlMap_Displacement]; } break;
+		case DebugHeadDisplayTexture_ColorControlMap: { headTextureOverride = mHeadInfo.Textures[eBaseHeadTexture_ControlMap_Color]; } break;
+		case DebugHeadDisplayTexture_FeatureMap: { headTextureOverride = mHeadInfo.Textures[eBaseHeadTexture_FeatureMap]; } break;
+		case DebugHeadDisplayTexture_ColorTransferMap: { headTextureOverride = mHeadInfo.Textures[eBaseHeadTexture_ColorTransfer]; } break;
+		case DebugHeadDisplayTexture_SkinMap: { headTextureOverride = mHeadInfo.Textures[eBaseHeadTexture_Skin]; } break;
+		default: break;
 		}
 		CPUTMaterial *mat = mDisplayHead->GetMaterial(0, 0);
 		mat->OverridePSTexture(0, headTextureOverride);
 		SAFE_RELEASE(mat);
-        
+
 		renderParams.mpCamera = (CPUTCamera*)mCameraControllers[mCameraMode]->GetCamera();
 
 		D3D11_VIEWPORT viewport = { 0.0f, 0.0f, mViewportDim.x, mViewportDim.y, 0.0f, 1.0f };
@@ -1147,21 +1051,18 @@ void Menu_FaceMapping::Render(CPUTRenderParameters &renderParams)
 			frameConstants.Projection = *pCamera->GetProjectionMatrix();
 			renderParams.mpPerFrameConstants->SetData(0, sizeof(CPUTFrameConstantBuffer), (UINT*)&frameConstants);
 		}
- 
+
 		if (!mHideCubeMap)
-        {
-            renderParams.mRenderOnlyVisibleModels = false;
-            mpCubemap->RenderRecursive(renderParams, 0);
-            renderParams.mRenderOnlyVisibleModels = true;
-        }
+		{
+			renderParams.mRenderOnlyVisibleModels = false;
+			mpCubemap->RenderRecursive(renderParams, 0);
+			renderParams.mRenderOnlyVisibleModels = true;
+		}
 
 		// render head
 		mDisplayHead->Render(renderParams, 0);
 		if (mShowWireframe)
 			mDisplayHead->Render(renderParams, 2);
-
-		//if (mDisplayGlasses)
-			//mDisplayGlasses->Render(renderParams, 0);
 
 		if (hasHair)
 		{
@@ -1189,12 +1090,11 @@ void Menu_FaceMapping::Render(CPUTRenderParameters &renderParams)
 
 		if (mRenderHeadLandmarks)
 		{
-			/*for (int i = 0; i < (int)mHeadInfo.BaseHeadLandmarks.size(); i++)
+			for (int i = 0; i < (int)mHeadInfo.BaseHeadLandmarks.size(); i++)
 			{
 				float3 p = mHeadInfo.BaseHeadLandmarks[i];
-				p.z += 0.1f;
 				DrawBox(renderParams, p, float3(0.25f, 0.25f, 0.25f), CPUTColor4(1.0f, 1.0f, 0.0f, 1.0f));
-			}*/
+			}
 
 			// Generate new points
 			std::vector<float3> newPoints;
@@ -1206,104 +1106,12 @@ void Menu_FaceMapping::Render(CPUTRenderParameters &renderParams)
 			newPoints.push_back(M1);
 			float3 M2 = (mHeadInfo.BaseHeadLandmarks[18] + mHeadInfo.BaseHeadLandmarks[27]) / 2.0f;
 			newPoints.push_back(M2);
-
-			//AllocConsole();
-			freopen("CONIN$", "r", stdin);
-			freopen("CONOUT$", "w", stdout);
-			freopen("CONOUT$", "w", stderr);
-
-			float3 T1(0,0,0);
-			//newPoints.push_back(T1);
-			float3 T2(0,0,0);
-			int idT1, idT2;
-			//newPoints.push_back(T2);
-			//static bool firstTime = true;
-			//Generate ears
-			//if (firstTime)
-			{
-				//firstTime = false;
-				auto item = mDisplayHead->GetMesh(0);
-				//int vertex_count = static_cast<CPUTMeshDX11 *>(item)->GetVertexCount();
-				//item->FreeStagingIndexBuffer();
-				//item->FreeStagingVertexBuffer();
-
-				D3D11_MAPPED_SUBRESOURCE verts = item->MapVertices(renderParams, CPUT_MAP_READ);
-				//D3D11_MAPPED_SUBRESOURCE indices = item->MapIndices(renderParams, CPUT_MAP_READ);
-
-				//int index_count = static_cast<CPUTMeshDX11 *>(item)->GetIndexCount();
-				int vertex_count = static_cast<CPUTMeshDX11 *>(item)->GetVertexCount();
-				//std::cout << vertex_count << std::endl;
-				RemapVertex v1;
-				std::vector<float3> vertexs;
-				for (int i = 0; i < vertex_count; i++) {
-					if (false == CopyVerticesFromMesh(&v1, NULL, NULL, i, -1, -1, verts.pData, item))
-						break;
-
-					float3 ver = v1.position;
-					ver.x = -ver.x;
-					//std::cout << vertex.x << " " << vertex.y << " " << vertex.z << std::endl;
-					if (ver.x < T1.x)
-					{
-						T1 = ver;
-						idT1 = i;
-					}
-
-					if (ver.x > T2.x)
-					{
-						T2 = ver;
-						idT2 = i;
-					}
-					vertexs.push_back(ver);
-				}
-
-				int delta = 20;
-				for (int i = -delta; i < delta; i++)
-				{
-					float3 tmp1 = vertexs[std::max(std::min(idT1 + i, vertex_count - 1), 0)];
-					//newPoints.push_back(T1);
-					float3 tmp2 = vertexs[std::max(std::min(idT2 + i, vertex_count - 1), 0)];
-					//newPoints.push_back(T2);
-
-					if (tmp1.y > T1.y) T1 = tmp1;
-					if (tmp2.y > T2.y) T2 = tmp2;
-				}
-			}
-			newPoints.push_back(T1);
-			newPoints.push_back(T2);
-			
-			
-
 			//mDisplayHead
-			for (int i = 0; i < (int)newPoints.size(); i++)
+			for (int i = 0; i < newPoints.size(); i++)
 				DrawBox(renderParams, newPoints[i], float3(0.25f, 0.25f, 0.25f), CPUTColor4(0, 1.0f, 0.0f, 1.0f));
 
-			std::vector<float3> morphedLandmarks = mPipeline.HeadGeometryStage->MorphedHeadLandmarks;
-			//AllocConsole();
-			//freopen("CONOUT$", "w", stdout);
-			int n = (int)mPipeline.HeadGeometryStage->MorphedLandmarkMesh.GetVertCount();
-			//for (int i = 0; i < n; i++)
-			//{
-			//	float3 p = mPipeline.HeadGeometryStage->MorphedLandmarkMesh.Pos[i];
-			//	//p.z -= 1;
-			//	DrawBox(renderParams, p, float3(0.25f, 0.25f, 0.25f), CPUTColor4(1.0f, 0.0f, 0.0f, 1.0f));
-			//}
+			float3 Nose = mHeadInfo.BaseHeadLandmarks[29];
 
-			//for (int i = 0; i < morphedLandmarks.size(); i++)
-			//{
-			//	/*float3 p1 = morphedLandmarks[i];
-			//	float3 p2 = mHeadInfo.BaseHeadLandmarks[i];
-			//	printf("%d\t%f %f %f \n \t %f %f %f \n", i, p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);*/
-			//	float3 p = morphedLandmarks[i];
-			//	//p.z -= 1.0f;
-			//	DrawBox(renderParams, p, float3(0.25f, 0.25f, 0.25f), CPUTColor4(1.0f, 0.0f, 0.0f, 1.0f));
-			//}
-
-			/*float3 Nose;
-			for (float z = -50; z < 10; z += 0.1f)
-			{
-				float3 p = float3(Nose.x, Nose.y, z);
-				DrawBox(renderParams, p, float3(0.25f, 0.25f, 0.25f), CPUTColor4(1.0f, 0.0f, 0.0f, 1.0f));
-			}*/
 		}
 
 
@@ -1314,15 +1122,15 @@ void Menu_FaceMapping::Render(CPUTRenderParameters &renderParams)
 			{
 			case DebugTextureView_DisplacementColor:
 			{
-				SetCodeTexture(0, mPipeline.DisplacementMapStage->Output.ColorMap->GetColorResourceView());
+													   SetCodeTexture(0, mPipeline.DisplacementMapStage->Output.ColorMap->GetColorResourceView());
 			} break;
 			case DebugTextureView_DisplacementDepth:
 			{
-				SetCodeTexture(0, mPipeline.DisplacementMapStage->Output.DepthMap->GetColorResourceView());
+													   SetCodeTexture(0, mPipeline.DisplacementMapStage->Output.DepthMap->GetColorResourceView());
 			} break;
 			case  DebugTextureView_FinalHeadDiffuse:
 			{
-				SetCodeTexture(0, mPipelineOutput.DiffuseTexture);
+													   SetCodeTexture(0, mPipelineOutput.DiffuseTexture);
 			} break;
 			}
 
@@ -1356,7 +1164,7 @@ void Menu_FaceMapping::Render(CPUTRenderParameters &renderParams)
 			}
 		}
 	}
+
 	DrawGUI(renderParams);
 }
 
-#endif

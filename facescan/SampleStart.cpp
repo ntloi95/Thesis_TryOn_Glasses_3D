@@ -61,26 +61,45 @@ void MySample::Create()
 	
 	int windowWidth, windowHeight;
 	mpWindow->GetClientDimensions(&windowWidth, &windowHeight);
+
 	SampleUtil_Init();
 	MenuGlob_Init();
 	MenuGlob_SetScreenDim(windowWidth, windowHeight);
 	MenuController_Init();
 	
-
-	//Create Menu Function here, 2 functions: Face, Glasses
-	std::string debugFace;
 	std::string userDir = GetUserDataDirectory();
-	CPUTFileSystem::CombinePath(userDir, "loi.obj", &debugFace);
-	gMenu_FaceMapping->mGender = MALE;
-	gMenu_FaceMapping->LoadFace(debugFace);
-	MenuController_PushMenu(gMenu_FaceMapping);
-	//MenuController_PushMenu(gMenu_NewUserRegister);
-	//MenuController_PushMenu(gMenu_AddNewGlasses);
-	//MenuController_PushMenu(gMenu_ViewUserList);
+	
 
 #ifndef DISABLE_RSSDK
 	MenuController_PushMenu(gMenu_Scan);
+
+	// go directly to the face mapping menu
+	//std::string debugFace;
+	//CPUTFileSystem::CombinePath(userDir, "joe.obj", &debugFace);
+	//gMenu_FaceMapping->LoadFace(debugFace);
+	//MenuController_PushMenu(gMenu_FaceMapping);
+
+	// Go directly to the face scan preview menu
+	//gMenu_FaceScanPreview->LoadFaceObj("", true);
+	//gMenu_FaceScanPreview->SetFaceScanMode( FaceScanPreviewMode_ApproveScan );
+	//MenuController_PushMenu(gMenu_FaceScanPreview);
+	
+#else
+	//AllocConsole();
+	//freopen("CONOUT$", "w", stdout);
+
+	std::string facePath;
+	std::ifstream ifstr(userDir + "\\currentid");
+	std::string userId;
+	ifstr >> userId;
+	userId += ".obj";
+	
+	CPUTFileSystem::CombinePath(userDir, userId, &facePath);
+	gMenu_FaceMapping->LoadFace(facePath);
+	MenuController_PushMenu(gMenu_FaceMapping);
+
 #endif
+
 	MenuGlob_GUI()->SetActivePanel(MENU_CPUT_PANEL_ID);
 
 }
@@ -229,13 +248,14 @@ void MySample::Render(double deltaSeconds)
     UpdatePerFrameConstantBuffer(renderParams, deltaSeconds);
 
     // Clear back buffer
-	const float clearColor[] = { 0.0993f, 0.0993f, 0.0993f, 1.0f };
-	mpContext->ClearRenderTargetView(mpBackBufferRTV, clearColor);
+    const float clearColor[] = { 0.0993f, 0.0993f, 0.0993f, 1.0f };
+    mpContext->ClearRenderTargetView( mpBackBufferRTV,  clearColor );
     mpContext->ClearDepthStencilView( mpDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 0.0f, 0);
-	    if(mpCameraController->GetCamera() == mpShadowCamera)
-		{
-			mpDebugSprite->DrawSprite(renderParams);
-		}
+
+    if(mpCameraController->GetCamera() == mpShadowCamera)
+    {
+        mpDebugSprite->DrawSprite(renderParams);
+    }
 
 	MenuController_Render(renderParams);
 	CPUTDrawGUI();
@@ -306,7 +326,7 @@ void MySample::CreateResources()
     std::string mediaDirectory;
 
     CPUTFileSystem::GetExecutableDirectory(&executableDirectory);
-    CPUTFileSystem::ResolveAbsolutePathAndFilename(executableDirectory + "../../../../Media/", &mediaDirectory);
+    CPUTFileSystem::ResolveAbsolutePathAndFilename(executableDirectory + "./Media/", &mediaDirectory);
     
 	pAssetLibrary->SetMediaDirectoryName(mediaDirectory + "gui_assets/");
     pAssetLibrary->SetSystemDirectoryName(mediaDirectory + "System/");

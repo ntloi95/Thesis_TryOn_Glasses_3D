@@ -181,7 +181,7 @@ public:
         }
     }
 
-	bool ExportModel( CPUTModel* cputModel, CPUTRenderParameters const& renderParams, int materialPass );
+	bool ExportModel( CPUTModel* cputModel, CPUTRenderParameters const& renderParams, int materialPass, std::string theName);
 
 	void Close() {
 
@@ -220,24 +220,6 @@ private:
 
 };
 
-struct RemapVertex
-{
-	float3 position;
-	float3 normal;
-	float2 uv;
-	float2 bary;
-};
-
-bool CopyVerticesFromMesh(
-	RemapVertex *pV1,
-	RemapVertex *pV2,
-	RemapVertex *pV3,
-	const int index_0,
-	const int index_1,
-	const int index_2,
-	const void *pVertData,
-	const CPUTMesh *pMesh
-	);
 
 // ====================================================================================================================
 #endif

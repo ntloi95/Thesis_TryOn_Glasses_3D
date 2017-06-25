@@ -199,8 +199,8 @@ void Menu_LandmarkEdit::DrawGUI(CPUTRenderParameters &renderParams)
 		window_flags_full |= ImGuiWindowFlags_NoInputs;
 
 		ImGuiStyle& style = ImGui::GetStyle();
-		//float prevAlpha = style.;
-		//style.WindowFillAlphaDefault = 0.0f; // make it transparent
+		float prevAlpha = style.WindowFillAlphaDefault;
+		style.WindowFillAlphaDefault = 0.0f; // make it transparent
 		ImGui::SetNextWindowSize(ImVec2((float)renderParams.mWidth - (float)mGuiWidth, (float)renderParams.mHeight));
 		ImGui::Begin("Fullscreen", &fullOpened, window_flags_full);
 
@@ -211,7 +211,7 @@ void Menu_LandmarkEdit::DrawGUI(CPUTRenderParameters &renderParams)
 		ImGui::Text("Hold Shift - Move Slowly");
 
 		ImGui::End();
-		//style.WindowFillAlphaDefault = prevAlpha;
+		style.WindowFillAlphaDefault = prevAlpha;
 	}
 }
 

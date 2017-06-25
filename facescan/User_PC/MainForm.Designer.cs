@@ -67,10 +67,10 @@
             // IconApp
             // 
             this.IconApp.BackColor = System.Drawing.Color.Transparent;
-            this.IconApp.Image = global::User_PC.Properties.Resources.icon;
-            this.IconApp.Location = new System.Drawing.Point(8, 16);
+            this.IconApp.Image = global::User_PC.Properties.Resources.iconofficial;
+            this.IconApp.Location = new System.Drawing.Point(8, 23);
             this.IconApp.Name = "IconApp";
-            this.IconApp.Size = new System.Drawing.Size(48, 48);
+            this.IconApp.Size = new System.Drawing.Size(44, 41);
             this.IconApp.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.IconApp.TabIndex = 14;
             this.IconApp.TabStop = false;
@@ -126,7 +126,7 @@
             this.Name = "MainForm";
             this.Sizable = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "          TRY GLASSES";
+            this.Text = "          UFO TRY ON";
             ((System.ComponentModel.ISupportInitialize)(this.logoIntel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.IconApp)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
