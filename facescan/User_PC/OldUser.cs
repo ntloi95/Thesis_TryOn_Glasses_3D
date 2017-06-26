@@ -294,6 +294,12 @@ namespace User_PC
 
         private void btnUpdateInfor_Click(object sender, EventArgs e)
         {
+
+            if(txtBoxOldEmail.Text.Length == 0 || txtBoxOldName.Text.Length == 0)
+            {
+                MessageBox.Show("All required information must be filled!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             try
             {
                 WebRequest request = WebRequest.Create(Utilities.ServerHost+"/api/updateinfor?email=" + CurrentUser.Email);
@@ -341,19 +347,23 @@ namespace User_PC
         
         private void materialRaisedButton5_Click(object sender, EventArgs e)
         {
+            if (avatar == null)
+            {
+                MessageBox.Show("You have not taken a photo", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             try {
                 WebRequest request = WebRequest.Create(Utilities.ServerHost+"/api/updatepassword?email="+CurrentUser.Email);
                 request.Method = "PUT";
 
                 User user = new User();
-                if(avatar == null)
-                    MessageBox.Show("You have not set avatar for log in by face", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                else                    
+
                 using (var ms = new MemoryStream())
                 {
                     avatar.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
                     user.Avatar = Convert.ToBase64String(ms.ToArray());
                 }
+
                 user.Password = CurrentUser.Password;
                 string postData = JsonConvert.SerializeObject(user);
                 byte[] byteArray = Encoding.UTF8.GetBytes(postData);
@@ -433,6 +443,7 @@ namespace User_PC
         private void TabPageLogin_Enter(object sender, EventArgs e)
         {
             btnBack.Visible = false;
+            this.ActiveControl = TextBoxEmail;
         }
 
         private void TextBoxEmail_Leave(object sender, EventArgs e)
@@ -453,6 +464,10 @@ namespace User_PC
         private void btnUpdateTextPassword_Click(object sender, EventArgs e)
         {
             if(txtBoxNewPass1.Text != txtBoxNewPass2.Text || txtBoxNewPass1.Text.Length == 0 || txtBoxOldPass.Text != CurrentUser.Password)
+            {
+                MessageBox.Show("Old password is not correct or new one is not matching", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             try
             {
                 WebRequest request = WebRequest.Create(Utilities.ServerHost + "/api/update_text_password?email=" + CurrentUser.Email);

@@ -238,7 +238,6 @@ namespace User_PC
             System.IO.StreamWriter file = new System.IO.StreamWriter(Utilities.CurrentUserID);
             file.Write(CurrentUser.Id);
             file.Close();
-            MessageBox.Show(CurrentUser.Id.ToString());
 
             Thread thread = new Thread(() =>
             {
@@ -322,6 +321,31 @@ namespace User_PC
         private void TabControlNewUser_SelectedIndexChanged(object sender, EventArgs e)
         {
             labelNotification.Text = "";
+            int index = TabControlNewUser.SelectedIndex;
+            switch (index)
+            {
+                case 0:
+                    {
+                        labelInstruction.Text = "Fill all information and click Next";
+                        break;
+                    }
+                case 1:
+                    {
+                        labelInstruction.Text = "Set password, avatar and click Next!";
+                        break;
+                    }
+                case 2:
+                    {
+                        labelInstruction.Text = "";
+                        break;
+                    }
+                case 3:
+                    {
+                        labelInstruction.Text = "Scan your face and Modify it same to your!";
+                        break;
+                    }
+
+            }
         }
 
         private void txtBoxEmail_Leave(object sender, EventArgs e)

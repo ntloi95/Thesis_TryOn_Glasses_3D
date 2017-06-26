@@ -117,14 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label12.Text" xml:space="preserve">
-    <value>In next step, you will scan your face yourself. Please
-- Face in front
-- Close your hair
-- Do command if you see red text (closer, turn left, turn right...)
-- Click Begin scanning, turn your face to the right and to the left.
-- Modify the face model so that it same to you. Click save and finished to submit
-
-</value>
+  <data name="label1.Text" xml:space="preserve">
+    <value>Graduation Thesis in Bachelor of Science,
+Information Technology Honor Program, Ho Chi Minh City, University of Science.
+Student: Thanh Loi NGUYEN and Xuan Hong LE
+Year: July, 2017
+Supervisor: MSc. Tri Tuan NGUYEN, Director of Selab, HCMUS</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>We would like to specially thank to :
+    - MSc. Tri Tuan NGUYEN, who directly helped us very much during the thesis period.
+    - PhD. Minh Triet TRAN, who helped us to select and orient during honor program 4-year period.
+    - All Staff and Software Engineer in Selab helped us technical problems.
+    - Faculty of Information Technolog, Ho Chi Minh City, University of Science.
+    - Aureole IT Company, Mitani Incorporation, Japan sponsored for this thesis.
+    - GameTechDev, Intel Corporation, USA, published face mapping article with Intel Realsense.</value>
   </data>
 </root>

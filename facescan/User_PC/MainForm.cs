@@ -34,5 +34,11 @@ namespace User_PC
             this.Hide();
             form.Show(this);
         }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Form aboutForm = new AboutForm();
+            aboutForm.ShowDialog(this);
+        }
     }
 }
