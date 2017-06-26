@@ -34,15 +34,19 @@ void MenuGlob_Init()
 	gMenu_LandmarkEdit = new Menu_LandmarkEdit();
 
 	// Load profile before Init();
-	/*std::string profilePath;
+	std::string profilePath;
 	std::string userDir = GetUserDataDirectory();
 	std::ifstream ifstr(userDir + "\\currentid");
-	std::string userId;
-	ifstr >> userId;
-	userId += ".profile";
-	CPUTFileSystem::CombinePath(userDir, userId, &profilePath);
+	std::string userId, gender;
+	ifstr >> userId >> gender;
+	ifstr.close();
+	if (gender.length() == 0)
+		CPUTFileSystem::CombinePath(userDir, userId + ".profile", &profilePath);
+	else
+		CPUTFileSystem::CombinePath(userDir, gender + ".profile", &profilePath);
+
 	gMenu_FaceMapping->LoadProfile(profilePath);
-*/
+
 	gMenu_Scan->Init();
 	gMenu_FaceScanPreview->Init();
 	gMenu_FaceMapping->Init();

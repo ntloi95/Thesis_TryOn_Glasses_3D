@@ -85,7 +85,7 @@ namespace User_PC
                             user.Address = txtBoxAddress.Text;
                             user.Discription = "";
                             user.Email = txtBoxEmail.Text;
-                            user.Gender = (btnFemale.Checked ? "F" : "M");
+                            user.Gender = (btnFemale.Checked ? "female" : "male");
                             user.Name = txtBoxName.Text;
 
                             string postData = JsonConvert.SerializeObject(user);
@@ -236,7 +236,8 @@ namespace User_PC
 
             //Write data for read right profile of currentUser.
             System.IO.StreamWriter file = new System.IO.StreamWriter(Utilities.CurrentUserID);
-            file.Write(CurrentUser.Id);
+            file.WriteLine(CurrentUser.Id);
+            file.WriteLine(CurrentUser.Gender);
             file.Close();
 
             Thread thread = new Thread(() =>

@@ -119,10 +119,10 @@ void Menu_FaceMapping::SetDefaultDebug()
 	mSkipFaceColorBlend = false;
 	mSkipSeamFill = false;
 
-	mDirectionalLightHeight = 0.0f;//mUserAdjustment.lightHeight;
-	mDirectionalLightAngle = 0.0f;//mUserAdjustment.lightAngle;
-	mDirectionalLightIntensity = 0.15f;//mUserAdjustment.directionLight;
-	mAmbientLightIntensity = 0.7f;//mUserAdjustment.ambientLight;
+	mDirectionalLightHeight = mUserAdjustment.lightHeight;
+	mDirectionalLightAngle = mUserAdjustment.lightAngle;
+	mDirectionalLightIntensity = mUserAdjustment.directionLight;
+	mAmbientLightIntensity = mUserAdjustment.ambientLight;
 }
 
 void Menu_FaceMapping::ResetCameraDefaults()
@@ -271,41 +271,37 @@ void Menu_FaceMapping::Init()
 	QuickSet("Front Profile", "Jaw Level", 0.5f, "shape_jaw_level", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
 	QuickSet("Front Profile", "Neck Width", 0.5f, "shape_neck_girth", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
 
-	QuickSet("Base Shape", "Shape 1", 0.0f, "shape_1", 0.0f, 1.0f, 0.0f, 1.0f, mMorphParamDefs);
-	QuickSet("Base Shape", "Shape 2", 0.0f, "shape_2", 0.0f, 1.0f, 0.0f, 1.0f, mMorphParamDefs);
-	QuickSet("Base Shape", "Shape 3", 0.0f, "shape_3", 0.0f, 1.0f, 0.0f, 1.0f, mMorphParamDefs);
-	QuickSet("Base Shape", "Width", 0.0f, "shape_width", 0.0f, 1.0f, 0.0f, 1.0f, mMorphParamDefs);
+	QuickSet("Base Shape", "Oval 1", mUserAdjustment.oval1, "shape_1", 0.0f, 1.0f, 0.0f, 1.0f, mMorphParamDefs);
+	QuickSet("Base Shape", "Oval 2", mUserAdjustment.oval2, "shape_2", 0.0f, 1.0f, 0.0f, 1.0f, mMorphParamDefs);
+	QuickSet("Base Shape", "Female Shape", mUserAdjustment.femaleShape, "shape_3", 0.0f, 1.0f, 0.0f, 1.0f, mMorphParamDefs);
+	QuickSet("Base Shape", "Overal Width", mUserAdjustment.overallWidth, "shape_width", 0.0f, 1.0f, 0.0f, 1.0f, mMorphParamDefs);
 
-	def.Reset("Base Shape", "Roundness", 0.5f);
+	def.Reset("Base Shape", "Roundness", mUserAdjustment.roundness);
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_round", 0.5f, 1.0f, 0.0f, 1.0f));
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_square", 0.0f, 0.5f, 1.0f, 0.0f));
 	mMorphParamDefs.push_back(def);
 
-	def.Reset("Base Shape", "BMI", 0.5f);
+	def.Reset("Base Shape", "BMI", mUserAdjustment.bmi);
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_BMI_Heavy", 0.5f, 1.0f, 0.0f, 1.0f));
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_BMI_Lean", 0.0f, 0.5f, 1.0f, 0.0f));
 	mMorphParamDefs.push_back(def);
 
-	def.Reset("Jaw", "Cheekbone", 0.0f);
+	def.Reset("Chin", "Cheekbone", mUserAdjustment.cheekbone);
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_Cheekbone_Size", 0.0f, 1.0f, 0.0f, 1.0f));
 	mMorphParamDefs.push_back(def);
 
-	def.Reset("Jaw", "Chin Protrude", 0.5f);
+	def.Reset("Chin", "Chin Protrude", mUserAdjustment.chinProtrude);
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_chin_back", 0.0f, 0.5f, 1.0f, 0.0f));
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_chin_front", 0.5f, 1.0f, 0.0f, 1.0f));
 	mMorphParamDefs.push_back(def);
 
-	def.Reset("Jaw", "Chin Level", 0.0f);
+	def.Reset("Chin", "Chin Level", mUserAdjustment.chinLevel);
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_chin_level", 0.0f, 1.0f, 0.0f, 1.0f));
 	mMorphParamDefs.push_back(def);
 
-	def.Reset("Jaw", "Chin Width", 0.5f);
+	def.Reset("Chin", "Chin Width", mUserAdjustment.chinWidth);
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_chin_narrow", 0.0f, 0.5f, 1.0f, 0.0f));
 	def.MorphParts.push_back(SMorphTweakParamPart("shape_chin_width", 0.5f, 1.0f, 0.0f, 1.0f));
-	mMorphParamDefs.push_back(def);
-
-	def.Reset("Other", "Neck Slope", 0.0f);
-	def.MorphParts.push_back(SMorphTweakParamPart("shape_chin_neck_slope", 0.0f, 1.0f, 0.0f, 1.0f));
 	mMorphParamDefs.push_back(def);
 
 	// Add all the morph targets available.
@@ -326,18 +322,17 @@ void Menu_FaceMapping::Init()
 					name = name.substr(6);
 				}
 
-				QuickSet("All Shapes", name.c_str(), 0.5f, modelName.c_str(), 0.0f, 1.0f, -5.0f, 5.0f, mMorphParamDefs);
-				QuickSet("All Shapes Post", name.c_str(), 0.5f, modelName.c_str(), 0.0f, 1.0f, -5.0f, 5.0f, mPostMorphParamDefs);
+				QuickSet("Others", name.c_str(), 0.5f, modelName.c_str(), 0.0f, 1.0f, -5.0f, 5.0f, mMorphParamDefs);
+				if (strcmp(name.c_str(), "Mouth_Open") == 0)
+					QuickSet("All Shapes Post", name.c_str(), mUserAdjustment.mouthOpen, modelName.c_str(), 0.0f, 1.0f, -5.0f, 5.0f, mPostMorphParamDefs);
+				else if (strcmp(name.c_str(), "Brow_Height") == 0)
+					QuickSet("All Shapes Post", name.c_str(), mUserAdjustment.BrowHeight, modelName.c_str(), 0.0f, 1.0f, -5.0f, 5.0f, mPostMorphParamDefs);
+				else
+					QuickSet("All Shapes Post", name.c_str(), 0.5f, modelName.c_str(), 0.0f, 1.0f, -5.0f, 5.0f, mPostMorphParamDefs);
 			}
 		}
 		SAFE_RELEASE(node);
 	}
-
-	def.Reset("Shape", "BMI", 0.5f);
-	def.MorphParts.push_back(SMorphTweakParamPart("shape_BMI_Heavy", 0.5f, 1.0f, 0.0f, 1.0f));
-	def.MorphParts.push_back(SMorphTweakParamPart("shape_BMI_Lean", 0.0f, 0.5f, 1.0f, 0.0f));
-	mPostMorphParamDefs.push_back(def);
-	QuickSet("Shape", "Ogre", 0.0f, "shape_Ogre", 0.0f, 1.0f, 0.0f, 1.0f, mPostMorphParamDefs);
 
 	CPUTSoftwareMesh tempMesh;
 	for (int i = 0; i < 2; i++)
@@ -374,40 +369,19 @@ void Menu_FaceMapping::Init()
 		mHairDefs.push_back(hairDef);
 	};
 
-
-	mHairDefs.push_back(SHairDef(NULL, "Hairless", NULL));
-
-	AddHair(hairShortSet, "ShortHair.mdl", "Short");
-	AddHair(hairMediumSet, "HairMedium.mdl", "Medium");
-	AddHair(hairLongSet, "Long_Hair.mdl", "Long");
-	AddHair(hairHelmet1Set, "hair1_retopo.mdl", "Helmet Short");
-	AddHair(hairHelmet2Set, "hair2.mdl", "Helmet 2");
-	AddHair(hairHelmet3Set, "hair3.mdl", "Helmet 3");
-	AddHair(hairHelmet4Set, "hair4.mdl", "Helmet 4");
+	AddHair(hairShortSet, "ShortHair.mdl", "Vietnamese Short Male");
+	AddHair(hairMediumSet, "HairMedium.mdl", "American Medium Female");
+	AddHair(hairLongSet, "Long_Hair.mdl", "African Long Male");
+	AddHair(hairHelmet1Set, "hair1_retopo.mdl", "Europe Short Male");
+	AddHair(hairHelmet2Set, "hair2.mdl", "African Short Male");
+	AddHair(hairHelmet3Set, "hair3.mdl", "Asian Long Female");
+	AddHair(hairHelmet4Set, "hair4.mdl", "South American Female");
 
 	mHairDefNames = (const char **)malloc(sizeof(const char*)* mHairDefs.size());
 	for (int i = 0; i < (int)mHairDefs.size(); i++)
 		mHairDefNames[i] = mHairDefs[i].Name.c_str();
 
-	SetLoadHairDef(0, true);
-
-	// Load Beard Parts
-	auto AddBeardPart = [=](CPUTAssetSet *set, const char *modelName, const char *displayName)
-	{
-		SHairDef hairDef(NULL, displayName, new CPUTSoftwareMesh());
-		beardSet->GetAssetByName(modelName, (CPUTRenderNode**)&hairDef.Model);
-		CPUTMeshDX11 *dx11Mesh = (CPUTMeshDX11 *)hairDef.Model->GetMesh(0);
-		hairDef.SWMesh->CopyFromDX11Mesh(dx11Mesh);
-		hairDef.SWMesh->ApplyTransform(hairDef.Model->GetWorldMatrix());
-		mBeardDefs.push_back(hairDef);
-		mBeardEnabled.push_back(false);
-	};
-
-	AddBeardPart(beardSet, "Chops.mdl", "Chops");
-	AddBeardPart(beardSet, "moustache.mdl", "Mustache");
-	AddBeardPart(beardSet, "SideBurns.mdl", "Sideburns");
-	AddBeardPart(beardSet, "SoulPatch.mdl", "Soulpatch");
-	AddBeardPart(beardSet, "goatee.mdl", "Goatee");
+	SetLoadHairDef(mUserAdjustment.hairIndex, true);
 
 }
 
@@ -428,6 +402,7 @@ void Menu_FaceMapping::SetLoadHairDef(int hairIndex, bool force)
 
 void Menu_FaceMapping::Shutdown()
 {
+
 	SAFE_DELETE(mCameraControlViewer);
 	SAFE_DELETE(mCameraControlFPS);
 	SAFE_DELETE(mCameraControlOrthographic);
@@ -491,15 +466,17 @@ void Menu_FaceMapping::ActivationChanged(bool active)
 void Menu_FaceMapping::SetDefaultTweaksInternal()
 {
 	mTweaks.Scale = 1.0f;
-	mTweaks.FaceYaw = 0; //mUserAdjustment.yaw;
-	mTweaks.FacePitch = 0; // mUserAdjustment.pitch;
-	mTweaks.FaceRoll = 0; // mUserAdjustment.roll;
+	mTweaks.FaceYaw = mUserAdjustment.yaw;
+	mTweaks.FacePitch = mUserAdjustment.pitch;
+	mTweaks.FaceRoll = mUserAdjustment.roll;
 	mTweaks.OutputTextureResolution = 2048;
-	mTweaks.DisplaceOffset = float3(0.0f, 0.0f, -3.5f);
-	mTweaks.BlendColor1 = CPUTColorFromBytes(228, 194, 171, 255);
-	mTweaks.BlendColor2 = CPUTColorFromBytes(205, 50, 50, 255);
-	mTweaks.PostBlendAdjust[0] = mTweaks.PostBlendAdjust[1] = int3(0, 0, 0);
-	mTweaks.PostBlendColorize[0] = mTweaks.PostBlendColorize[1] = int3(180, 50, 0);
+	mTweaks.DisplaceOffset = float3(0.0f, 0.0f, mUserAdjustment.z);
+	mTweaks.BlendColor1 = CPUTColorFromBytes(208, 168, 153, 255);
+	mTweaks.BlendColor2 = CPUTColorFromBytes(157, 38, 38, 255);
+	mTweaks.PostBlendAdjust[0] = int3(0, mUserAdjustment.skinSaturation1, mUserAdjustment.skinLightness1);
+	mTweaks.PostBlendAdjust[1] = int3(0, mUserAdjustment.skinSaturation2, mUserAdjustment.skinLightness2);
+	mTweaks.PostBlendColorize[0] = int3(0, 0, 0);
+	mTweaks.PostBlendColorize[1] = int3(180, 50, 0);
 	mTweaks.PostBlendMode = PostBlendColorMode_None;
 	mTweaks.OtherHeadBlend = 0.0f;
 	mTweaks.OtherHeadTexture = NULL;
@@ -700,24 +677,77 @@ void Menu_FaceMapping::DrawGUI(CPUTRenderParameters &renderParams)
 	if (ImGui::Button("Save and Finish", ImVec2(0, 0)))
 	{
 		HandleExport();
-		//std::ifstream ifstr("..\\..\\..\\..\\userdata\\email.tmp");
-		//std::string email;
-		//ifstr >> email;
-		//email = "..\\..\\..\\..\\export\\" + email +".png";
-		////Change file name and edit file mtl
-		//rename("..\\..\\..\\..\\export\\facediffuse.png", email.c_str());
 
-		//Exit Process
+		//Get new profile
+
+		mUserAdjustment.yaw = mTweaks.FaceYaw;
+		mUserAdjustment.pitch = mTweaks.FacePitch;
+		mUserAdjustment.roll = mTweaks.FaceRoll;
+		mUserAdjustment.z = mTweaks.DisplaceOffset.z;
+		mUserAdjustment.hairIndex = mCurrentHairIndex;
+		mUserAdjustment.lightAngle = mDirectionalLightAngle;
+		mUserAdjustment.lightHeight = mDirectionalLightHeight;
+		mUserAdjustment.ambientLight = mAmbientLightIntensity;
+		mUserAdjustment.directionLight = mDirectionalLightIntensity;
+			//Save profile value:
+		for (int i = 0; i < (int)mMorphParamDefs.size(); i++)
+		{
+			mSliderValue[mMorphParamDefs[i].Name] = mActiveMorphParamWeights[i];
+		}
+
+		for (int i = 0; i < (int)mPostMorphParamDefs.size(); i++)
+		{
+			mSliderValue[mPostMorphParamDefs[i].Name] = mActivePostMorphParamWeights[i];
+		}
+		
+		mUserAdjustment.headWidth = mSliderValue["Head Width"];
+		mUserAdjustment.eyeArea = mSliderValue["Eye Area Width"];
+		mUserAdjustment.cheekboneWidth = mSliderValue["Cheekbone Width"];
+		mUserAdjustment.occWitdh = mSliderValue["OCC Width"];
+		mUserAdjustment.jawWidth = mSliderValue["Jaw Width"];
+		mUserAdjustment.jawLevel = mSliderValue["Jaw Level"];
+		mUserAdjustment.neckWidth = mSliderValue["Neck Width"];
+		mUserAdjustment.oval1 = mSliderValue["Oval 1"];
+		mUserAdjustment.oval2 = mSliderValue["Oval 2"];
+		mUserAdjustment.femaleShape = mSliderValue["Female Shape"];
+		mUserAdjustment.overallWidth = mSliderValue["Overal Width"];
+		mUserAdjustment.roundness = mSliderValue["Roundness"];
+		mUserAdjustment.bmi = mSliderValue["BMI"];
+		mUserAdjustment.cheekbone = mSliderValue["Cheekbone"];
+		mUserAdjustment.chinProtrude = mSliderValue["Chin Protrude"];
+		mUserAdjustment.chinLevel = mSliderValue["Chin Level"];
+		mUserAdjustment.chinWidth = mSliderValue["Chin Width"];
+
+		mUserAdjustment.mouthOpen = mSliderValue["Mouth_Open"];
+		mUserAdjustment.BrowHeight = mSliderValue["Brow_Height"];
+
+		mUserAdjustment.skinSaturation1 = mTweaks.PostBlendAdjust[0].y;
+		mUserAdjustment.skinLightness1 = mTweaks.PostBlendAdjust[0].z;
+		mUserAdjustment.skinSaturation2 = mTweaks.PostBlendAdjust[1].y;
+		mUserAdjustment.skinLightness2 = mTweaks.PostBlendAdjust[1].z;
+
+		// Save profile:
+		std::string profilePath;
+		std::string userDir = GetUserDataDirectory();
+		std::ifstream ifstr(userDir + "\\currentid");
+		std::string userId;
+		ifstr >> userId;
+		userId += ".profile";
+		CPUTFileSystem::CombinePath(userDir, userId, &profilePath);
+		mUserAdjustment.writeProfile(profilePath);
+
 		exit(EXIT_SUCCESS);
 	}
-	ImGui::SameLine(0, guiSpacing);
-	if (ImGui::Button("Reset all to previous state", ImVec2(0, 0)))
-		SetDefaultTweaksInternal();
+	
 
 	ImGui::Spacing();
 	ImGui::Spacing();
 	if (ImGui::CollapsingHeader("Edit Face's Position", NULL, true, true))
 	{
+		if (ImGui::Button("Reset position", ImVec2(0, 0)))
+		{
+			SetDefaultTweaksInternal();
+		}
 		ImGui::SliderAngle("Yaw", &mTweaks.FaceYaw, -20.0f, 20.0f);
 		ImGui::SliderAngle("Pitch", &mTweaks.FacePitch, -20.0f, 20.0f);
 		ImGui::SliderAngle("Roll", &mTweaks.FaceRoll, -20.0f, 20.0f);
@@ -734,7 +764,7 @@ void Menu_FaceMapping::DrawGUI(CPUTRenderParameters &renderParams)
 		for (int i = 0; i < (int)mMorphParamDefs.size(); i++)
 		{
 			SMorphTweakParamDef *def = &mMorphParamDefs[i];
-			if (strcmp(def->Category.c_str(), "Other") == 0){
+			if (strcmp(def->Category.c_str(), "Others") == 0){
 				i++;  continue;
 			}
 
@@ -755,26 +785,8 @@ void Menu_FaceMapping::DrawGUI(CPUTRenderParameters &renderParams)
 			}
 			if (nodeOpened)
 			{
-				if (strcmp((*curCategory).c_str(), "All Shapes") == 0)
-				{
-					char c = mMorphParamDefs[i].Name.c_str()[0];
-					if (c == 'E' || c == 'F')
-						ImGui::SliderFloat(mMorphParamDefs[i].Name.c_str(), &mActiveMorphParamWeights[i], 0.0f, 1.0f);
-				}
-				else if (strcmp((*curCategory).c_str(), "Front Profile") == 0 && strcmp(mMorphParamDefs[i].Name.c_str(), "Chin Width") == 0)
-				{
-				}
-				else if (strcmp(mMorphParamDefs[i].Name.c_str(), "Shape 1") == 0)
-					ImGui::SliderFloat("Oval 1", &mActiveMorphParamWeights[i], 0.0f, 1.0f);
-				else if (strcmp(mMorphParamDefs[i].Name.c_str(), "Shape 2") == 0)
-					ImGui::SliderFloat("Oval 2", &mActiveMorphParamWeights[i], 0.0f, 1.0f);
-				else if (strcmp(mMorphParamDefs[i].Name.c_str(), "Shape 3") == 0)
-					ImGui::SliderFloat("Female Shape", &mActiveMorphParamWeights[i], 0.0f, 1.0f);
-				else if (strcmp(mMorphParamDefs[i].Name.c_str(), "Width") == 0)
-					ImGui::SliderFloat("Overall Width", &mActiveMorphParamWeights[i], 0.0f, 1.0f);
-				else
-					ImGui::SliderFloat(mMorphParamDefs[i].Name.c_str(), &mActiveMorphParamWeights[i], 0.0f, 1.0f);
-
+				ImGui::SliderFloat(mMorphParamDefs[i].Name.c_str(), &mActiveMorphParamWeights[i], 0.0f, 1.0f);
+				
 			}
 
 		}
@@ -803,12 +815,13 @@ void Menu_FaceMapping::DrawGUI(CPUTRenderParameters &renderParams)
 	//	ImGui::SliderFloat("Color 2", &mTweaks.LightColor2, 0.0f, 1.0f);
 	//}
 
-	if (ImGui::CollapsingHeader("Hair and beard", NULL, true, true))
+	if (ImGui::CollapsingHeader("Hair", NULL, true, true))
 	{
 		int index = mCurrentHairIndex;
 		ImGui::Combo("Hair Style", &index, mHairDefNames, (int)mHairDefs.size());
 		SetLoadHairDef(index);
-		if (ImGui::TreeNode("Beard"))
+		
+		/*if (ImGui::TreeNode("Beard"))
 		{
 			for (int i = 0; i < (int)mBeardDefs.size(); i++)
 			{
@@ -818,7 +831,7 @@ void Menu_FaceMapping::DrawGUI(CPUTRenderParameters &renderParams)
 				mBeardEnabled[i] = enabled;
 			}
 			ImGui::TreePop();
-		}
+		}*/
 	}
 
 	if (ImGui::CollapsingHeader("Head activity", NULL, true))

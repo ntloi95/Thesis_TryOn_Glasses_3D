@@ -103,10 +103,11 @@ void Menu_FaceScanPreview::HandleCPUTEvent(int eventID, int controlID, CPUTContr
 			std::ifstream ifstr(".\\userdata\\email.tmp");
 			std::string email;
 			ifstr >> email;
-			ofnFilename += email;
-			ofnFilename += ".obj";
-			FaceScan_MoveScanData(mModelFilename.c_str(), ofnFilename.c_str());
-			gMenu_FaceMapping->LoadFace(ofnFilename);
+			string face = ofnFilename + email + ".obj";
+		
+			FaceScan_MoveScanData(mModelFilename.c_str(), face.c_str());
+			gMenu_FaceMapping->LoadFace(face.c_str());
+
 			MenuController_PushMenu(gMenu_FaceMapping, true);
 		} break;
 		case MainMenuIds_Back:

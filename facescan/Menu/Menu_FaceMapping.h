@@ -160,6 +160,7 @@ public:
 	bool IsFaceLoaded();
 
 	UserAdjustment mUserAdjustment;
+	std::map<string, float> mSliderValue;
 
 private:
 

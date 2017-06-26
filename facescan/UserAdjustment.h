@@ -30,20 +30,7 @@ struct UserAdjustment
 	float chinLevel;
 	float chinWidth;
 
-	float earLevelDown;
-	float earLevelUp;
-	float earLobeSize;
-	float earRotateForward;
-	float earRotateY;
-	float earSizeHorizontal;
-	float earSizeVertical;
-	float foreHeadHeight;
-	float foreHeadSlope;
-	float foreHeadWidth;
-
 	int hairIndex;
-	bool bears[5];
-
 	float mouthOpen;
 	float BrowHeight;
 

@@ -40,32 +40,8 @@ void UserAdjustment::readProfile(string filename)
 
 	getline(file, line);
 	getline(file, line);
-	file >> earLevelDown
-		>> earLevelUp
-		>> earLobeSize
-		>> earRotateForward
-		>> earRotateY
-		>> earSizeHorizontal
-		>> earSizeVertical
-		>> foreHeadHeight
-		>> foreHeadSlope
-		>> foreHeadWidth;
-
-	getline(file, line);
-	getline(file, line);
 	file >> hairIndex;
 
-	getline(file, line);
-	getline(file, line);
-	for (int i = 0; i < 5; i++)
-	{
-		int t;
-		file >> t;
-		if (t)
-			bears[i] = true;
-		else
-			bears[i] = false;
-	}
 
 	getline(file, line);
 	getline(file, line);
@@ -85,6 +61,7 @@ void UserAdjustment::readProfile(string filename)
 		>> lightAngle
 		>> directionLight
 		>> ambientLight;
+	file.close();
 }
 
 void UserAdjustment::writeProfile(string filename)
@@ -120,29 +97,8 @@ void UserAdjustment::writeProfile(string filename)
 		<< chinLevel << endl
 		<< chinWidth << endl;
 
-	file << "#10 other" << endl
-		<< earLevelDown << endl
-		<< earLevelUp << endl
-		<< earLobeSize << endl
-		<< earRotateForward << endl
-		<< earRotateY << endl
-		<< earSizeHorizontal << endl
-		<< earSizeVertical << endl
-		<< foreHeadHeight << endl
-		<< foreHeadSlope << endl
-		<< foreHeadWidth << endl;
-
 	file << "#Hair" << endl
 		<< hairIndex << endl;
-
-	file << "#Beard" << endl;
-	for (int i = 0; i < 5; i++)
-	{
-		if (bears[i])
-			file << 1 << endl;
-		else
-			file << 0 << endl;
-	}
 
 	file << "#Head activity" << endl
 		<< mouthOpen << endl
@@ -159,4 +115,5 @@ void UserAdjustment::writeProfile(string filename)
 		<< lightAngle << endl
 		<< directionLight << endl
 		<< ambientLight << endl;
+	file.close();
 }
