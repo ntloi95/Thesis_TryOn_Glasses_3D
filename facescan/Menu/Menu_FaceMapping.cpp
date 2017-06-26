@@ -263,13 +263,13 @@ void Menu_FaceMapping::Init()
 		morphParamDefs.push_back(def);
 	};
 
-	QuickSet("Front Profile", "Head Width", 0.5f, "shape_width", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
-	QuickSet("Front Profile", "Eye Area Width", 0.5f, "shape_orbit_width", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
-	QuickSet("Front Profile", "Cheekbone Width", 0.5f, "shape_cheekbone_size", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
-	QuickSet("Front Profile", "OCC Width", 0.5f, "shape_OCC_width", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
-	QuickSet("Front Profile", "Jaw Width", 0.5f, "shape_jaw_width", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
-	QuickSet("Front Profile", "Jaw Level", 0.5f, "shape_jaw_level", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
-	QuickSet("Front Profile", "Neck Width", 0.5f, "shape_neck_girth", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
+	QuickSet("Front Profile", "Head Width", mUserAdjustment.headWidth, "shape_width", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
+	QuickSet("Front Profile", "Eye Area Width", mUserAdjustment.eyeArea, "shape_orbit_width", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
+	QuickSet("Front Profile", "Cheekbone Width", mUserAdjustment.cheekboneWidth, "shape_cheekbone_size", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
+	QuickSet("Front Profile", "OCC Width", mUserAdjustment.occWitdh, "shape_OCC_width", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
+	QuickSet("Front Profile", "Jaw Width", mUserAdjustment.jawWidth, "shape_jaw_width", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
+	QuickSet("Front Profile", "Jaw Level", mUserAdjustment.jawLevel, "shape_jaw_level", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
+	QuickSet("Front Profile", "Neck Width", mUserAdjustment.neckWidth, "shape_neck_girth", 0.0f, 1.0f, -2.0f, 2.0f, mMorphParamDefs);
 
 	QuickSet("Base Shape", "Oval 1", mUserAdjustment.oval1, "shape_1", 0.0f, 1.0f, 0.0f, 1.0f, mMorphParamDefs);
 	QuickSet("Base Shape", "Oval 2", mUserAdjustment.oval2, "shape_2", 0.0f, 1.0f, 0.0f, 1.0f, mMorphParamDefs);
