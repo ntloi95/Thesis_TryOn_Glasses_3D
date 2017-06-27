@@ -151,9 +151,6 @@
     <None Include="images\welcome.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="images\light\user_male.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="images\scan.png" />
   </ItemGroup>
   <ItemGroup>

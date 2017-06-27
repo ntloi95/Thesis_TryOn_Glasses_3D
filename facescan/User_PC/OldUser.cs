@@ -122,16 +122,19 @@ namespace User_PC
 
         private void tabPageScan_Leave(object sender, EventArgs e)
         {
+            this.ControlBox = true;
             WindowState = FormWindowState.Normal;
         }
 
         private void tabPageEdit_Leave(object sender, EventArgs e)
         {
             WindowState = FormWindowState.Normal;
+            this.ControlBox = true;
         }
 
-        private void tabPageScan_Enter(object sender, EventArgs e)
+        private async void tabPageScan_Enter(object sender, EventArgs e)
         {
+            this.ControlBox = false;
             const int GWL_STYLE = -16;
             const int WS_VISIBLE = 0x10000000;
 
@@ -141,6 +144,7 @@ namespace User_PC
             //Write data for read right profile of currentUser.
             System.IO.StreamWriter file = new System.IO.StreamWriter(Utilities.CurrentUserID);
             file.WriteLine(CurrentUser.Id);
+            file.Write(CurrentUser.Gender);
             file.Close();
 
             Thread thread = new Thread(() =>
@@ -155,17 +159,23 @@ namespace User_PC
                 MoveWindow(ScanHandle, TabControlOldUser.Left, TabControlOldUser.Top, TabControlOldUser.Width, TabControlOldUser.Height, true);
 
                 ScanProcess.WaitForExit();
+                ScanHandle = IntPtr.Zero;
+                ScanProcess.Close();
+                ScanProcess = null;
 
+                labelLoadingScan.Text = "PUSHING NEW HEAD...";
+                
                 //Push Edit Head data
                 Utilities.PushEditHeadData(CurrentUser);
-                TabControlOldUser.SelectedIndex = 1;
+                TabControlOldUser.SelectedTab = TabPageFunction;
+                labelLoadingScan.Text = "LOADING...";
                 WindowState = oldState;
             });
 
             thread.Start();
 
             IProgress<int> progress = new Progress<int>(value => { progressLoadScan.Value = value; });
-            Task.Run(() =>
+            await Task.Run(() =>
             {
                 for (int i = 0; i <= progressLoadScan.Maximum - 5; i++)
                 {
@@ -176,14 +186,14 @@ namespace User_PC
                     System.Threading.Thread.Sleep(1);
                     progress.Report(i);
                 }
+                while (thread.IsAlive) ;
             });
-            
         }
-        private void tabPageEdit_Enter(object sender, EventArgs e)
+        private async void tabPageEdit_Enter(object sender, EventArgs e)
         {
+            this.ControlBox = false;
             const int GWL_STYLE = -16;
             const int WS_VISIBLE = 0x10000000;
-            const int SW_SHOW = 5;
 
             FormWindowState oldState = this.WindowState;
             this.WindowState = FormWindowState.Maximized;
@@ -201,23 +211,28 @@ namespace User_PC
                 EditProcess.WaitForInputIdle();
                 EditHandle = EditProcess.MainWindowHandle;
 
-                ShowWindow(EditHandle, SW_SHOW);
                 SetParent(EditHandle, this.Handle);
                 SetWindowLong(EditHandle, GWL_STYLE, WS_VISIBLE);
                 MoveWindow(EditHandle, TabControlOldUser.Left, TabControlOldUser.Top, TabControlOldUser.Width, TabControlOldUser.Height, true);
 
                 EditProcess.WaitForExit();
+                EditHandle = IntPtr.Zero;
+                EditProcess.Close();
+                EditProcess = null;
+
+                labelLoadingEdit.Text = "PUSHING NEW HEAD...";
 
                 //Push Edit Head Data
                 Utilities.PushEditHeadData(CurrentUser);
-                TabControlOldUser.SelectedIndex = 1;
+                TabControlOldUser.SelectedTab = TabPageFunction;
+                labelLoadingEdit.Text = "LOADING...";
                 WindowState = oldState;
             });
 
             thread.Start();
 
             IProgress<int> progress = new Progress<int>(value => { progressLoadEdit.Value = value; });
-            Task.Run(() =>
+            await Task.Run(() =>
             {
                 for (int i = 0; i <= progressLoadEdit.Maximum - 5; i++)
                 {
@@ -228,6 +243,7 @@ namespace User_PC
                     System.Threading.Thread.Sleep(1);
                     progress.Report(i);
                 }
+                while (thread.IsAlive) ;
             });
         }
 
@@ -239,15 +255,15 @@ namespace User_PC
            
             txtBoxOldEmail.Text = CurrentUser.Email;
             txtBoxOldName.Text = CurrentUser.Name;
-            radioButtonOldMale.Checked = CurrentUser.Gender == "M";
-            radioButtonOldFemale.Checked = CurrentUser.Gender == "F";
+            radioButtonOldMale.Checked = CurrentUser.Gender == "male";
+            radioButtonOldFemale.Checked = CurrentUser.Gender == "female";
 
             btnBack.Visible = true;
         }
 
         private void btnBack_Click(object sender, EventArgs e)
         {
-            TabControlOldUser.SelectedIndex = 1;
+            TabControlOldUser.SelectedTab = TabPageFunction;
         }
 
         private void TabPageFunction_Enter(object sender, EventArgs e)
@@ -269,15 +285,18 @@ namespace User_PC
 
         private void OldUser_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (ScanHandle != IntPtr.Zero)
+            if (ScanProcess != null)
             {
-                ScanProcess.Kill();
+                ScanProcess.Close();
                 ScanHandle = IntPtr.Zero;
+                ScanProcess = null;
             }
-            if (EditHandle != IntPtr.Zero)
+
+            if(EditProcess != null)
             {
-                EditProcess.Kill();
+                EditProcess.Close();
                 EditHandle = IntPtr.Zero;
+                EditProcess = null;
             }
             Owner.Show();
         }
@@ -408,6 +427,8 @@ namespace User_PC
             webcam = new WebCam();
             webcam.InitializeWebCam(ref pictureBoxFace);
             avatar = null;
+            EditProcess = null;
+            ScanProcess = null;
         }
 
         private void btnTryAgain_Click(object sender, EventArgs e)

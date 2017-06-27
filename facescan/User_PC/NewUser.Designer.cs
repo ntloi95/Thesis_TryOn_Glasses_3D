@@ -66,6 +66,8 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label12 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.labelLoadingScan = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
             this.progressLoadScan = new System.Windows.Forms.ProgressBar();
             this.btnBack = new MaterialSkin.Controls.MaterialRaisedButton();
             this.btnNext = new MaterialSkin.Controls.MaterialRaisedButton();
@@ -198,7 +200,7 @@
             // 
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.Black;
-            this.label3.Location = new System.Drawing.Point(28, 144);
+            this.label3.Location = new System.Drawing.Point(28, 139);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(68, 30);
             this.label3.TabIndex = 38;
@@ -257,7 +259,7 @@
             // 
             this.txtBoxName.BackColor = System.Drawing.Color.White;
             this.txtBoxName.Depth = 0;
-            this.txtBoxName.Hint = "";
+            this.txtBoxName.Hint = "Type your name here";
             this.txtBoxName.Location = new System.Drawing.Point(136, 48);
             this.txtBoxName.MouseState = MaterialSkin.MouseState.HOVER;
             this.txtBoxName.Name = "txtBoxName";
@@ -273,7 +275,7 @@
             // 
             this.txtBoxEmail.BackColor = System.Drawing.Color.White;
             this.txtBoxEmail.Depth = 0;
-            this.txtBoxEmail.Hint = "";
+            this.txtBoxEmail.Hint = "Type your email here";
             this.txtBoxEmail.Location = new System.Drawing.Point(136, 96);
             this.txtBoxEmail.MouseState = MaterialSkin.MouseState.HOVER;
             this.txtBoxEmail.Name = "txtBoxEmail";
@@ -303,7 +305,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBoxAddress.BackColor = System.Drawing.Color.White;
             this.txtBoxAddress.Depth = 0;
-            this.txtBoxAddress.Hint = "";
+            this.txtBoxAddress.Hint = "Type your address here (Optional)";
             this.txtBoxAddress.Location = new System.Drawing.Point(32, 240);
             this.txtBoxAddress.MouseState = MaterialSkin.MouseState.HOVER;
             this.txtBoxAddress.Name = "txtBoxAddress";
@@ -401,7 +403,7 @@
             this.pictureBoxFace.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxFace.Image = global::User_PC.Properties.Resources.user_male;
+            this.pictureBoxFace.Image = global::User_PC.Properties.Resources.iconofficial;
             this.pictureBoxFace.Location = new System.Drawing.Point(32, 96);
             this.pictureBoxFace.Name = "pictureBoxFace";
             this.pictureBoxFace.Size = new System.Drawing.Size(328, 261);
@@ -516,7 +518,7 @@
             // 
             this.txtBoxPassword2.BackColor = System.Drawing.Color.White;
             this.txtBoxPassword2.Depth = 0;
-            this.txtBoxPassword2.Hint = "";
+            this.txtBoxPassword2.Hint = "Retype your password here";
             this.txtBoxPassword2.Location = new System.Drawing.Point(24, 182);
             this.txtBoxPassword2.MouseState = MaterialSkin.MouseState.HOVER;
             this.txtBoxPassword2.Name = "txtBoxPassword2";
@@ -532,15 +534,15 @@
             // 
             this.txtBoxPassword1.BackColor = System.Drawing.Color.White;
             this.txtBoxPassword1.Depth = 0;
-            this.txtBoxPassword1.Hint = "";
-            this.txtBoxPassword1.Location = new System.Drawing.Point(32, 82);
+            this.txtBoxPassword1.Hint = "Type your password here";
+            this.txtBoxPassword1.Location = new System.Drawing.Point(24, 82);
             this.txtBoxPassword1.MouseState = MaterialSkin.MouseState.HOVER;
             this.txtBoxPassword1.Name = "txtBoxPassword1";
             this.txtBoxPassword1.PasswordChar = '*';
             this.txtBoxPassword1.SelectedText = "";
             this.txtBoxPassword1.SelectionLength = 0;
             this.txtBoxPassword1.SelectionStart = 0;
-            this.txtBoxPassword1.Size = new System.Drawing.Size(240, 23);
+            this.txtBoxPassword1.Size = new System.Drawing.Size(248, 23);
             this.txtBoxPassword1.TabIndex = 34;
             this.txtBoxPassword1.UseSystemPasswordChar = false;
             // 
@@ -584,6 +586,8 @@
             // tabPage4
             // 
             this.tabPage4.BackColor = System.Drawing.Color.White;
+            this.tabPage4.Controls.Add(this.labelLoadingScan);
+            this.tabPage4.Controls.Add(this.label19);
             this.tabPage4.Controls.Add(this.progressLoadScan);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
@@ -594,11 +598,33 @@
             this.tabPage4.Enter += new System.EventHandler(this.tabPageScanner_Enter);
             this.tabPage4.Leave += new System.EventHandler(this.tabPageScanner_Leave);
             // 
+            // labelLoadingScan
+            // 
+            this.labelLoadingScan.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.labelLoadingScan.AutoSize = true;
+            this.labelLoadingScan.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelLoadingScan.Location = new System.Drawing.Point(352, 178);
+            this.labelLoadingScan.Name = "labelLoadingScan";
+            this.labelLoadingScan.Size = new System.Drawing.Size(74, 13);
+            this.labelLoadingScan.TabIndex = 4;
+            this.labelLoadingScan.Text = "LOADING...";
+            // 
+            // label19
+            // 
+            this.label19.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(240, 240);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(298, 26);
+            this.label19.TabIndex = 3;
+            this.label19.Text = "Scan your face and create your head as beautiful as you can.\r\nHope you enjoy it!";
+            this.label19.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // progressLoadScan
             // 
             this.progressLoadScan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.progressLoadScan.Location = new System.Drawing.Point(8, 195);
-            this.progressLoadScan.Maximum = 500;
+            this.progressLoadScan.Maximum = 1000;
             this.progressLoadScan.Name = "progressLoadScan";
             this.progressLoadScan.Size = new System.Drawing.Size(768, 23);
             this.progressLoadScan.TabIndex = 2;
@@ -644,9 +670,11 @@
             // 
             // labelInstruction
             // 
-            this.labelInstruction.Location = new System.Drawing.Point(512, 504);
+            this.labelInstruction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelInstruction.AutoSize = true;
+            this.labelInstruction.Location = new System.Drawing.Point(567, 509);
             this.labelInstruction.Name = "labelInstruction";
-            this.labelInstruction.Size = new System.Drawing.Size(272, 23);
+            this.labelInstruction.Size = new System.Drawing.Size(213, 13);
             this.labelInstruction.TabIndex = 39;
             this.labelInstruction.Text = "Fill all your information and click Next button";
             this.labelInstruction.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -693,6 +721,7 @@
             this.tabPage3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.IconApp)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -744,5 +773,7 @@
         private System.Windows.Forms.Label labelInstruction;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Label labelLoadingScan;
     }
 }

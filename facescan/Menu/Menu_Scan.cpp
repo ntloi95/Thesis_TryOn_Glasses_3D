@@ -174,7 +174,6 @@ void Menu_Scan::SetState(ScanState state)
 	case ScanState_ColorFeed:
 	{
 								pGUI->CreateButton("Begin Scanning", ScanMenuIds_StartScanning, MENU_CPUT_PANEL_ID, &mBeginScanButton);
-								pGUI->CreateButton("Skip Scanning", ScanMenuIds_GotoMapping, MENU_CPUT_PANEL_ID);
 								mBeginScanButton->SetEnable(false);
 	} break;
 	case ScanState_Scanning:

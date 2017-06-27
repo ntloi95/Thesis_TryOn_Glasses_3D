@@ -100,7 +100,7 @@ void Menu_FaceScanPreview::HandleCPUTEvent(int eventID, int controlID, CPUTContr
 		case MainMenuIds_Accept:
 		{
 			std::string ofnFilename = ".\\userdata\\";
-			std::ifstream ifstr(".\\userdata\\email.tmp");
+			std::ifstream ifstr(".\\userdata\\currentid");
 			std::string email;
 			ifstr >> email;
 			string face = ofnFilename + email + ".obj";

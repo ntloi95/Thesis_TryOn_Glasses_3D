@@ -40,9 +40,18 @@
             this.TabPageFunction = new System.Windows.Forms.TabPage();
             this.btn_LogOut = new MaterialSkin.Controls.MaterialRaisedButton();
             this.labelWelcome = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.btnChangePassword = new System.Windows.Forms.Button();
+            this.btnEditInfor = new System.Windows.Forms.Button();
+            this.btnScanAgain = new System.Windows.Forms.Button();
+            this.btnEditFace = new System.Windows.Forms.Button();
             this.TabPageScan = new System.Windows.Forms.TabPage();
+            this.labelIntroScan = new System.Windows.Forms.Label();
+            this.labelLoadingScan = new System.Windows.Forms.Label();
             this.progressLoadScan = new System.Windows.Forms.ProgressBar();
             this.TabPageEdit = new System.Windows.Forms.TabPage();
+            this.labelIntroEdit = new System.Windows.Forms.Label();
+            this.labelLoadingEdit = new System.Windows.Forms.Label();
             this.progressLoadEdit = new System.Windows.Forms.ProgressBar();
             this.TabPageInfor = new System.Windows.Forms.TabPage();
             this.btnUpdateInfor = new MaterialSkin.Controls.MaterialRaisedButton();
@@ -81,27 +90,22 @@
             this.btnTakePhoto = new MaterialSkin.Controls.MaterialRaisedButton();
             this.btnTurnOnCamera = new MaterialSkin.Controls.MaterialRaisedButton();
             this.label18 = new System.Windows.Forms.Label();
+            this.pictureBoxFace = new System.Windows.Forms.PictureBox();
             this.btnBack = new System.Windows.Forms.Button();
             this.labelNotification = new System.Windows.Forms.Label();
             this.IconApp = new System.Windows.Forms.PictureBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.btnChangePassword = new System.Windows.Forms.Button();
-            this.btnEditInfor = new System.Windows.Forms.Button();
-            this.btnScanAgain = new System.Windows.Forms.Button();
-            this.btnEditFace = new System.Windows.Forms.Button();
-            this.pictureBoxFace = new System.Windows.Forms.PictureBox();
             this.TabControlOldUser.SuspendLayout();
             this.TabPageLogin.SuspendLayout();
             this.TabPageFunction.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.TabPageScan.SuspendLayout();
             this.TabPageEdit.SuspendLayout();
             this.TabPageInfor.SuspendLayout();
             this.tabPageChangePass.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.IconApp)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxFace)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.IconApp)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -194,7 +198,7 @@
             // 
             this.TextBoxEmail.BackColor = System.Drawing.Color.Silver;
             this.TextBoxEmail.Depth = 0;
-            this.TextBoxEmail.Hint = "                    Your email";
+            this.TextBoxEmail.Hint = "Type your email here";
             this.TextBoxEmail.Location = new System.Drawing.Point(301, 193);
             this.TextBoxEmail.MouseState = MaterialSkin.MouseState.HOVER;
             this.TextBoxEmail.Name = "TextBoxEmail";
@@ -211,7 +215,7 @@
             // 
             this.TextBoxPassword.BackColor = System.Drawing.Color.Silver;
             this.TextBoxPassword.Depth = 0;
-            this.TextBoxPassword.Hint = "                  Your password";
+            this.TextBoxPassword.Hint = "Type your password here";
             this.TextBoxPassword.Location = new System.Drawing.Point(301, 270);
             this.TextBoxPassword.MouseState = MaterialSkin.MouseState.HOVER;
             this.TextBoxPassword.Name = "TextBoxPassword";
@@ -278,8 +282,90 @@
             this.labelWelcome.TabIndex = 21;
             this.labelWelcome.Text = "Welcome, ";
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox1.Location = new System.Drawing.Point(48, 40);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(0);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(125, 125);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 22;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Resize += new System.EventHandler(this.pictureBox1_Resize);
+            // 
+            // btnChangePassword
+            // 
+            this.btnChangePassword.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btnChangePassword.BackColor = System.Drawing.Color.Transparent;
+            this.btnChangePassword.BackgroundImage = global::User_PC.Properties.Resources.password;
+            this.btnChangePassword.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnChangePassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnChangePassword.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.btnChangePassword.Location = new System.Drawing.Point(456, 344);
+            this.btnChangePassword.Name = "btnChangePassword";
+            this.btnChangePassword.Size = new System.Drawing.Size(336, 100);
+            this.btnChangePassword.TabIndex = 20;
+            this.btnChangePassword.Text = "Change Password";
+            this.btnChangePassword.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnChangePassword.UseVisualStyleBackColor = true;
+            this.btnChangePassword.Click += new System.EventHandler(this.btnChangePassword_Click);
+            // 
+            // btnEditInfor
+            // 
+            this.btnEditInfor.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btnEditInfor.BackColor = System.Drawing.Color.Transparent;
+            this.btnEditInfor.BackgroundImage = global::User_PC.Properties.Resources.edit;
+            this.btnEditInfor.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnEditInfor.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEditInfor.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.btnEditInfor.Location = new System.Drawing.Point(456, 176);
+            this.btnEditInfor.Name = "btnEditInfor";
+            this.btnEditInfor.Size = new System.Drawing.Size(336, 100);
+            this.btnEditInfor.TabIndex = 20;
+            this.btnEditInfor.Text = "Edit Information";
+            this.btnEditInfor.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnEditInfor.UseVisualStyleBackColor = true;
+            this.btnEditInfor.Click += new System.EventHandler(this.btnEditInfor_Click);
+            // 
+            // btnScanAgain
+            // 
+            this.btnScanAgain.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btnScanAgain.BackColor = System.Drawing.Color.Transparent;
+            this.btnScanAgain.BackgroundImage = global::User_PC.Properties.Resources.scan;
+            this.btnScanAgain.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnScanAgain.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnScanAgain.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnScanAgain.Location = new System.Drawing.Point(40, 176);
+            this.btnScanAgain.Name = "btnScanAgain";
+            this.btnScanAgain.Size = new System.Drawing.Size(328, 100);
+            this.btnScanAgain.TabIndex = 19;
+            this.btnScanAgain.Text = "Scan New Face";
+            this.btnScanAgain.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnScanAgain.UseVisualStyleBackColor = true;
+            this.btnScanAgain.Click += new System.EventHandler(this.btnScanAgain_Click);
+            // 
+            // btnEditFace
+            // 
+            this.btnEditFace.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btnEditFace.BackColor = System.Drawing.Color.Transparent;
+            this.btnEditFace.BackgroundImage = global::User_PC.Properties.Resources.editface;
+            this.btnEditFace.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnEditFace.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEditFace.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.btnEditFace.Location = new System.Drawing.Point(40, 344);
+            this.btnEditFace.Name = "btnEditFace";
+            this.btnEditFace.Size = new System.Drawing.Size(328, 100);
+            this.btnEditFace.TabIndex = 18;
+            this.btnEditFace.Text = "Edit Face Model";
+            this.btnEditFace.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnEditFace.UseVisualStyleBackColor = true;
+            this.btnEditFace.Click += new System.EventHandler(this.btnEditFace_Click);
+            // 
             // TabPageScan
             // 
+            this.TabPageScan.Controls.Add(this.labelIntroScan);
+            this.TabPageScan.Controls.Add(this.labelLoadingScan);
             this.TabPageScan.Controls.Add(this.progressLoadScan);
             this.TabPageScan.Location = new System.Drawing.Point(4, 22);
             this.TabPageScan.Name = "TabPageScan";
@@ -291,17 +377,41 @@
             this.TabPageScan.Enter += new System.EventHandler(this.tabPageScan_Enter);
             this.TabPageScan.Leave += new System.EventHandler(this.tabPageScan_Leave);
             // 
+            // labelIntroScan
+            // 
+            this.labelIntroScan.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.labelIntroScan.AutoSize = true;
+            this.labelIntroScan.Location = new System.Drawing.Point(267, 295);
+            this.labelIntroScan.Name = "labelIntroScan";
+            this.labelIntroScan.Size = new System.Drawing.Size(298, 26);
+            this.labelIntroScan.TabIndex = 7;
+            this.labelIntroScan.Text = "Scan your face and create your head as beautiful as you can.\r\nHope you enjoy it!";
+            this.labelIntroScan.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labelLoadingScan
+            // 
+            this.labelLoadingScan.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.labelLoadingScan.AutoSize = true;
+            this.labelLoadingScan.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelLoadingScan.Location = new System.Drawing.Point(379, 223);
+            this.labelLoadingScan.Name = "labelLoadingScan";
+            this.labelLoadingScan.Size = new System.Drawing.Size(74, 13);
+            this.labelLoadingScan.TabIndex = 5;
+            this.labelLoadingScan.Text = "LOADING...";
+            // 
             // progressLoadScan
             // 
             this.progressLoadScan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.progressLoadScan.Location = new System.Drawing.Point(8, 240);
-            this.progressLoadScan.Maximum = 500;
+            this.progressLoadScan.Maximum = 1000;
             this.progressLoadScan.Name = "progressLoadScan";
             this.progressLoadScan.Size = new System.Drawing.Size(816, 23);
             this.progressLoadScan.TabIndex = 1;
             // 
             // TabPageEdit
             // 
+            this.TabPageEdit.Controls.Add(this.labelIntroEdit);
+            this.TabPageEdit.Controls.Add(this.labelLoadingEdit);
             this.TabPageEdit.Controls.Add(this.progressLoadEdit);
             this.TabPageEdit.Location = new System.Drawing.Point(4, 22);
             this.TabPageEdit.Name = "TabPageEdit";
@@ -312,6 +422,28 @@
             this.TabPageEdit.UseVisualStyleBackColor = true;
             this.TabPageEdit.Enter += new System.EventHandler(this.tabPageEdit_Enter);
             this.TabPageEdit.Leave += new System.EventHandler(this.tabPageEdit_Leave);
+            // 
+            // labelIntroEdit
+            // 
+            this.labelIntroEdit.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.labelIntroEdit.AutoSize = true;
+            this.labelIntroEdit.Location = new System.Drawing.Point(267, 295);
+            this.labelIntroEdit.Name = "labelIntroEdit";
+            this.labelIntroEdit.Size = new System.Drawing.Size(298, 26);
+            this.labelIntroEdit.TabIndex = 6;
+            this.labelIntroEdit.Text = "Scan your face and create your head as beautiful as you can.\r\nHope you enjoy it!";
+            this.labelIntroEdit.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labelLoadingEdit
+            // 
+            this.labelLoadingEdit.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.labelLoadingEdit.AutoSize = true;
+            this.labelLoadingEdit.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelLoadingEdit.Location = new System.Drawing.Point(379, 223);
+            this.labelLoadingEdit.Name = "labelLoadingEdit";
+            this.labelLoadingEdit.Size = new System.Drawing.Size(74, 13);
+            this.labelLoadingEdit.TabIndex = 5;
+            this.labelLoadingEdit.Text = "LOADING...";
             // 
             // progressLoadEdit
             // 
@@ -444,7 +576,7 @@
             // 
             this.radioButtonOldFemale.AutoSize = true;
             this.radioButtonOldFemale.Depth = 0;
-            this.radioButtonOldFemale.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.radioButtonOldFemale.Font = new System.Drawing.Font("Roboto", 10F);
             this.radioButtonOldFemale.Location = new System.Drawing.Point(384, 208);
             this.radioButtonOldFemale.Margin = new System.Windows.Forms.Padding(0);
             this.radioButtonOldFemale.MouseLocation = new System.Drawing.Point(-1, -1);
@@ -462,7 +594,7 @@
             this.radioButtonOldMale.AutoSize = true;
             this.radioButtonOldMale.Checked = true;
             this.radioButtonOldMale.Depth = 0;
-            this.radioButtonOldMale.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.radioButtonOldMale.Font = new System.Drawing.Font("Roboto", 10F);
             this.radioButtonOldMale.Location = new System.Drawing.Point(156, 208);
             this.radioButtonOldMale.Margin = new System.Windows.Forms.Padding(0);
             this.radioButtonOldMale.MouseLocation = new System.Drawing.Point(-1, -1);
@@ -490,7 +622,7 @@
             // 
             this.txtBoxOldName.BackColor = System.Drawing.Color.White;
             this.txtBoxOldName.Depth = 0;
-            this.txtBoxOldName.Hint = "";
+            this.txtBoxOldName.Hint = "Type your new name here";
             this.txtBoxOldName.Location = new System.Drawing.Point(160, 72);
             this.txtBoxOldName.MouseState = MaterialSkin.MouseState.HOVER;
             this.txtBoxOldName.Name = "txtBoxOldName";
@@ -506,7 +638,7 @@
             // 
             this.txtBoxOldEmail.BackColor = System.Drawing.Color.White;
             this.txtBoxOldEmail.Depth = 0;
-            this.txtBoxOldEmail.Hint = "";
+            this.txtBoxOldEmail.Hint = "Type your new email here";
             this.txtBoxOldEmail.Location = new System.Drawing.Point(160, 152);
             this.txtBoxOldEmail.MouseState = MaterialSkin.MouseState.HOVER;
             this.txtBoxOldEmail.Name = "txtBoxOldEmail";
@@ -535,7 +667,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBoxOldAddress.BackColor = System.Drawing.Color.White;
             this.txtBoxOldAddress.Depth = 0;
-            this.txtBoxOldAddress.Hint = "";
+            this.txtBoxOldAddress.Hint = "Type your new address here (Optional)";
             this.txtBoxOldAddress.Location = new System.Drawing.Point(88, 323);
             this.txtBoxOldAddress.MouseState = MaterialSkin.MouseState.HOVER;
             this.txtBoxOldAddress.Name = "txtBoxOldAddress";
@@ -679,7 +811,7 @@
             // 
             this.txtBoxOldPass.BackColor = System.Drawing.Color.White;
             this.txtBoxOldPass.Depth = 0;
-            this.txtBoxOldPass.Hint = "";
+            this.txtBoxOldPass.Hint = "Type your old password here";
             this.txtBoxOldPass.Location = new System.Drawing.Point(72, 98);
             this.txtBoxOldPass.MouseState = MaterialSkin.MouseState.HOVER;
             this.txtBoxOldPass.Name = "txtBoxOldPass";
@@ -695,7 +827,7 @@
             // 
             this.txtBoxNewPass2.BackColor = System.Drawing.Color.White;
             this.txtBoxNewPass2.Depth = 0;
-            this.txtBoxNewPass2.Hint = "";
+            this.txtBoxNewPass2.Hint = "Retype your new password here";
             this.txtBoxNewPass2.Location = new System.Drawing.Point(72, 285);
             this.txtBoxNewPass2.MouseState = MaterialSkin.MouseState.HOVER;
             this.txtBoxNewPass2.Name = "txtBoxNewPass2";
@@ -711,7 +843,7 @@
             // 
             this.txtBoxNewPass1.BackColor = System.Drawing.Color.White;
             this.txtBoxNewPass1.Depth = 0;
-            this.txtBoxNewPass1.Hint = "";
+            this.txtBoxNewPass1.Hint = "Type your new password here";
             this.txtBoxNewPass1.Location = new System.Drawing.Point(72, 185);
             this.txtBoxNewPass1.MouseState = MaterialSkin.MouseState.HOVER;
             this.txtBoxNewPass1.Name = "txtBoxNewPass1";
@@ -835,6 +967,19 @@
             this.label18.Text = "Change face picture \r\nThis is used to log in by face recognition";
             this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // pictureBoxFace
+            // 
+            this.pictureBoxFace.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBoxFace.Image = global::User_PC.Properties.Resources.iconofficial;
+            this.pictureBoxFace.Location = new System.Drawing.Point(24, 88);
+            this.pictureBoxFace.Name = "pictureBoxFace";
+            this.pictureBoxFace.Size = new System.Drawing.Size(368, 309);
+            this.pictureBoxFace.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBoxFace.TabIndex = 53;
+            this.pictureBoxFace.TabStop = false;
+            // 
             // btnBack
             // 
             this.btnBack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -870,100 +1015,6 @@
             this.IconApp.TabIndex = 41;
             this.IconApp.TabStop = false;
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox1.Image = global::User_PC.Properties.Resources.user_male;
-            this.pictureBox1.Location = new System.Drawing.Point(48, 40);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(125, 125);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 22;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Resize += new System.EventHandler(this.pictureBox1_Resize);
-            // 
-            // btnChangePassword
-            // 
-            this.btnChangePassword.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btnChangePassword.BackColor = System.Drawing.Color.Transparent;
-            this.btnChangePassword.BackgroundImage = global::User_PC.Properties.Resources.password;
-            this.btnChangePassword.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnChangePassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnChangePassword.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
-            this.btnChangePassword.Location = new System.Drawing.Point(456, 344);
-            this.btnChangePassword.Name = "btnChangePassword";
-            this.btnChangePassword.Size = new System.Drawing.Size(336, 100);
-            this.btnChangePassword.TabIndex = 20;
-            this.btnChangePassword.Text = "Change Password";
-            this.btnChangePassword.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnChangePassword.UseVisualStyleBackColor = true;
-            this.btnChangePassword.Click += new System.EventHandler(this.btnChangePassword_Click);
-            // 
-            // btnEditInfor
-            // 
-            this.btnEditInfor.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btnEditInfor.BackColor = System.Drawing.Color.Transparent;
-            this.btnEditInfor.BackgroundImage = global::User_PC.Properties.Resources.edit;
-            this.btnEditInfor.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnEditInfor.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEditInfor.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
-            this.btnEditInfor.Location = new System.Drawing.Point(456, 176);
-            this.btnEditInfor.Name = "btnEditInfor";
-            this.btnEditInfor.Size = new System.Drawing.Size(336, 100);
-            this.btnEditInfor.TabIndex = 20;
-            this.btnEditInfor.Text = "Edit Information";
-            this.btnEditInfor.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnEditInfor.UseVisualStyleBackColor = true;
-            this.btnEditInfor.Click += new System.EventHandler(this.btnEditInfor_Click);
-            // 
-            // btnScanAgain
-            // 
-            this.btnScanAgain.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btnScanAgain.BackColor = System.Drawing.Color.Transparent;
-            this.btnScanAgain.BackgroundImage = global::User_PC.Properties.Resources.scan;
-            this.btnScanAgain.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnScanAgain.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnScanAgain.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnScanAgain.Location = new System.Drawing.Point(40, 176);
-            this.btnScanAgain.Name = "btnScanAgain";
-            this.btnScanAgain.Size = new System.Drawing.Size(328, 100);
-            this.btnScanAgain.TabIndex = 19;
-            this.btnScanAgain.Text = "Scan New Face";
-            this.btnScanAgain.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnScanAgain.UseVisualStyleBackColor = true;
-            this.btnScanAgain.Click += new System.EventHandler(this.btnScanAgain_Click);
-            // 
-            // btnEditFace
-            // 
-            this.btnEditFace.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btnEditFace.BackColor = System.Drawing.Color.Transparent;
-            this.btnEditFace.BackgroundImage = global::User_PC.Properties.Resources.editface;
-            this.btnEditFace.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnEditFace.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEditFace.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
-            this.btnEditFace.Location = new System.Drawing.Point(40, 344);
-            this.btnEditFace.Name = "btnEditFace";
-            this.btnEditFace.Size = new System.Drawing.Size(328, 100);
-            this.btnEditFace.TabIndex = 18;
-            this.btnEditFace.Text = "Edit Face Model";
-            this.btnEditFace.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnEditFace.UseVisualStyleBackColor = true;
-            this.btnEditFace.Click += new System.EventHandler(this.btnEditFace_Click);
-            // 
-            // pictureBoxFace
-            // 
-            this.pictureBoxFace.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxFace.Image = global::User_PC.Properties.Resources.user_male;
-            this.pictureBoxFace.Location = new System.Drawing.Point(24, 88);
-            this.pictureBoxFace.Name = "pictureBoxFace";
-            this.pictureBoxFace.Size = new System.Drawing.Size(368, 309);
-            this.pictureBoxFace.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBoxFace.TabIndex = 53;
-            this.pictureBoxFace.TabStop = false;
-            // 
             // OldUser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -986,16 +1037,18 @@
             this.TabPageLogin.PerformLayout();
             this.TabPageFunction.ResumeLayout(false);
             this.TabPageFunction.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.TabPageScan.ResumeLayout(false);
+            this.TabPageScan.PerformLayout();
             this.TabPageEdit.ResumeLayout(false);
+            this.TabPageEdit.PerformLayout();
             this.TabPageInfor.ResumeLayout(false);
             this.TabPageInfor.PerformLayout();
             this.tabPageChangePass.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.IconApp)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxFace)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.IconApp)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1065,6 +1118,10 @@
         private System.Windows.Forms.ProgressBar progressLoadEdit;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label labelLoadingScan;
+        private System.Windows.Forms.Label labelLoadingEdit;
+        private System.Windows.Forms.Label labelIntroScan;
+        private System.Windows.Forms.Label labelIntroEdit;
 
     }
 }

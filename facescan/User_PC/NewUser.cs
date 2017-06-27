@@ -46,11 +46,6 @@ namespace User_PC
             webcam = new WebCam();
         }
 
-        private void NewUser_Load(object sender, EventArgs e)
-        {
-            
-        }
-
         void FinishedSignIn()
         {
             TabControlNewUser.Visible = false;
@@ -220,14 +215,16 @@ namespace User_PC
 
         private void tabPageScanner_Leave(object sender, EventArgs e)
         {
+            this.ControlBox = true;
             if (ScanHandle != IntPtr.Zero)
             {
                 ShowWindow(ScanHandle, 0);
             }
         }
 
-        private void tabPageScanner_Enter(object sender, EventArgs e)
+        private async void tabPageScanner_Enter(object sender, EventArgs e)
         {
+            this.ControlBox = false;
             const int GWL_STYLE = -16;
             const int WS_VISIBLE = 0x10000000;
 
@@ -253,14 +250,17 @@ namespace User_PC
                 SetWindowLong(ScanHandle, GWL_STYLE, WS_VISIBLE);
                 MoveWindow(ScanHandle, TabControlNewUser.Left, TabControlNewUser.Top, TabControlNewUser.Width, TabControlNewUser.Height, true);
 
-                labelNotification.Text = "Please finish your scan step by step";
+                labelNotification.Text = "";
                 labelNotification.ForeColor = Color.Red;
                 btnNext.Visible = false;
 
                 ScanProcess.WaitForExit();
                 ScanHandle = IntPtr.Zero;
-                Utilities.PushHeadData(CurrentUser);
+                ScanProcess.Close();
+                ScanProcess = null;
 
+                Utilities.PushHeadData(CurrentUser);
+                this.WindowState = oldState;
                 progressLoadScan.Visible = false;
                 FinishedSignIn();
             });
@@ -268,7 +268,7 @@ namespace User_PC
             thread.Start();
 
             IProgress<int> progress = new Progress<int>(value => { progressLoadScan.Value = value; });
-            Task.Run(() =>
+            await Task.Run(() =>
             {
                 for (int i = 0; i <= progressLoadScan.Maximum - 5; i++)
                 {
@@ -279,17 +279,19 @@ namespace User_PC
                     System.Threading.Thread.Sleep(1);
                     progress.Report(i);
                 }
+                while (thread.IsAlive) ;
             });
         }
 
         private void NewUser_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Owner.Show();
-            if(ScanHandle != IntPtr.Zero)
+            if(ScanProcess != null)
             {
-                ScanProcess.Kill();
+                ScanProcess.Close();
                 ScanHandle = IntPtr.Zero;
+                ScanProcess = null;
             }
+            Owner.Show();
         }
 
         private void btnTurnCamera_Click(object sender, EventArgs e)
@@ -342,7 +344,7 @@ namespace User_PC
                     }
                 case 3:
                     {
-                        labelInstruction.Text = "Scan your face and Modify it same to your!";
+                        labelInstruction.Text = "Click Save and Finish when you've done!";
                         break;
                     }
 
@@ -362,6 +364,11 @@ namespace User_PC
             btnTryAgain.Visible = false;
             webcam.Start();
             avatar = null;
+        }
+
+        private void NewUser_Load(object sender, EventArgs e)
+        {
+            ScanProcess = null;
         }
     }
 }
